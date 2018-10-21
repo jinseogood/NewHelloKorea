@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,38 +69,38 @@ table.type09 td {
 table.type09 tr:hover{
     cursor:pointer;
 }
-	#reservationDetailTable{
-		width:500px;
-		line-height: 1.5;
-	}
-	#reservationDetailTable tr{
-		height:30px;
-	}
-	#reservationDetailTable th{
-		padding: 3px;
-	    text-align: center;
-	    vertical-align: middle;
-	    border-right: 3px solid #036;
-	    background: #f3f6f7;
-	}
-	#reservationDetailTable select{
-		margin: 3px;
-	}
-	#reservationDetailTable td{
-	    padding: 3px;
-	    vertical-align: middle;
-	    border: 1px solid #ccc;
-	}
+   #reservationDetailTable{
+      width:500px;
+      line-height: 1.5;
+   }
+   #reservationDetailTable tr{
+      height:30px;
+   }
+   #reservationDetailTable th{
+      padding: 3px;
+       text-align: center;
+       vertical-align: middle;
+       border-right: 3px solid #036;
+       background: #f3f6f7;
+   }
+   #reservationDetailTable select{
+      margin: 3px;
+   }
+   #reservationDetailTable td{
+       padding: 3px;
+       vertical-align: middle;
+       border: 1px solid #ccc;
+   }
 
 </style>
 </head>
 <body>
-	<jsp:include page="../common/menubar.jsp"/>
-	<jsp:include page="../common/adminMenubar.jsp"/>
-	<div class="main">
-	
-	<div class="titleArea">
-	<div class="row">
+   <jsp:include page="../common/menubar.jsp"/>
+   <jsp:include page="../common/adminMenubar.jsp"/>
+   <div class="main">
+   
+   <div class="titleArea">
+   <div class="row">
                         <div class="col-md-12">
                             <!--breadcrumbs start -->
                             <ul class="breadcrumb">
@@ -110,16 +111,16 @@ table.type09 tr:hover{
                             <!--breadcrumbs end -->
                         </div>
                     </div>
-	
-	
-	</div>
-			<div class="searchArea" align="center">
-			<form action="selectReservationList.ad" onsubmit="return checkForm();">
-			<div class="col-xs-8 col-xs-offset-2">
-		    <div class="input-group">
+   
+   
+   </div>
+         <div class="searchArea" align="center">
+         <form action="selectReservationList.ad" onsubmit="return checkForm();">
+         <div class="col-xs-8 col-xs-offset-2">
+          <div class="input-group">
                 <div class="input-group-btn search-panel">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    	<span id="search_concept">검색 카테고리</span> <span class="caret"></span>
+                       <span id="search_concept">검색 카테고리</span> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                       <li><a href="#oId" class="search">예약 번호</a></li>
@@ -152,50 +153,50 @@ table.type09 tr:hover{
         </div>
 
 
-	
-	<script>
-	 $(function(){
-    	 $("#datePicker").hide();
-    	 
+   
+   <script>
+    $(function(){
+        $("#datePicker").hide();
+        
      });
-	 
-	 $(document).ready(function(e){
-		 $(".search").click(function(e){
-			 $("#datePicker").hide();
-		 });
-	 });
-	 
+    
+    $(document).ready(function(e){
+       $(".search").click(function(e){
+          $("#datePicker").hide();
+       });
+    });
+    
      function showDatePicker(){
-    	 $("#datePicker").show();
-    	 
+        $("#datePicker").show();
+        
      }
      
      function checkForm(){
-    	 var searchWord = $('#searchWord').val();
-		 var param = $('.input-group #searchParam').val();
-		 if(param=='oId'){
-				if(isNaN(searchWord)){
-					alert("예약 번호는 숫자만 입력 가능합니다.");
-					return false;
-				}
-			}
-		 return true;
+        var searchWord = $('#searchWord').val();
+       var param = $('.input-group #searchParam').val();
+       if(param=='oId'){
+            if(isNaN(searchWord)){
+               alert("예약 번호는 숫자만 입력 가능합니다.");
+               return false;
+            }
+         }
+       return true;
       }
      
-	$(document).ready(function(e){
-	    $('.search-panel .dropdown-menu').find('a').click(function(e) {
-			e.preventDefault();
-			var param = $(this).attr("href").replace("#","");
-			var concept = $(this).text();
-			
-			
-			$('.search-panel span#search_concept').text(concept);
-			$('.input-group #searchParam').val(param);
-		});
-	});
-	
-	</script>
-	<div class="tableArea" align="center">
+   $(document).ready(function(e){
+       $('.search-panel .dropdown-menu').find('a').click(function(e) {
+         e.preventDefault();
+         var param = $(this).attr("href").replace("#","");
+         var concept = $(this).text();
+         
+         
+         $('.search-panel span#search_concept').text(concept);
+         $('.input-group #searchParam').val(param);
+      });
+   });
+   
+   </script>
+   <div class="tableArea" align="center">
 <table class="type09" id="reservationTable">
     <thead>
     <tr>
@@ -227,7 +228,7 @@ table.type09 tr:hover{
         <td>${ r.rType }</td>
         <td>${ r.oRCount }</td>
         <td>${ r.people }</td>
-        <td>${ r.price }</td>
+        <td><fmt:formatNumber value="${ r.price }" pattern="#,###"/></td>
         <c:if test="${r.pdType == 'P'}">
         <td>구매</td>
         </c:if>
@@ -275,96 +276,96 @@ table.type09 tr:hover{
     </div>
 
 <!-- 예약 디테일 -->
-	<div class="modal fade" id="reservationDetailModal" role="dialog">
-		<div class="modal-dialog" align="center">
-	    
-		  	<div class="modal-content" style="width:530px;">
-		  		<div class="modal-header">
-		  			<button type="button" class="close" data-dismiss="modal">&times;</button>
-		  			<h4 class="modal-title">상세 예약 내역</h4>
-		  		</div>
-		  		<div class="modal-body">
-		  			<table id="reservationDetailTable">
-		  				<tr>
-		  					<th>예약번호</th>
-		  					<td colspan="3"><p id="oId"></p></td>
-		  				</tr>
-		  				<tr>
-		  					<th>예약처</th>
-		  					<td colspan="3">
-		  						<p id="cName"></p>
-		  					</td>
-		  				</tr>
-		  				<tr>
-		  					<th>예약자</th>
-		  					<td colspan="3">
-		  						<p id="paName"></p>
-		  					</td>
-		  				</tr>
-		  				<tr>
-		  					<th>숙박기간</th>
-		  					<td colspan="3">
-		  						<p id="date"></p>
-		  					</td>
-		  				</tr>
-		  				<tr>
-		  					<th>예약일</th>
-		  					<td colspan="3">
-		  						<p id="pdDate"></p>
-		  					</td>
-		  				</tr>
-		  				<tr>
-		  					<th style="border-right:3px solid orangered;">객실 타입</th>
-		  					<td><p id="r_type"></p></td>
-		  					<th style="border-right:3px solid orangered;">객실 수</th>
-		  					<td><p id="o_rcount"></p></td>
-		  				</tr>
-		  				<tr>
-		  					<th>인원 수</th>
-		  					<td colspan="3"><p id="r_people"></p></td>
-		  				</tr>
-		  				<tr>
-		  					<th>금액</th>
-		  					<td><p id="r_price"></p></td>
-		  					<th>상태</th>
-		  					<td><p id="pdType"></p></td>
-		  				</tr>
-		  			</table>
-		  			
-		  		</div>
-		  		<div class="modal-footer" align="center">
-		  		</div>
-		  	</div>
-	      
-	  	</div>
-	</div>
-	
-	<script>
-		$(function(){
-			<% for(int i = 0; i < 11; i++){%>
-			$("#reservationTable tr").eq(<%=i%>).children().eq(5).hide();
-			$("#reservationTable tr").eq(<%=i%>).children().eq(6).hide();
-			$("#reservationTable tr").eq(<%=i%>).children().eq(7).hide();
-			$("#reservationTable tr").eq(<%=i%>).children().eq(8).hide();
-			<% } %>
-			$("#reservationTable tr").click(function(){
-				if($(this).children().eq(5).text()!=''){
-				$("#oId").text($(this).children().eq(0).text());
-				$("#cName").text($(this).children().eq(1).text());
-				$("#paName").text($(this).children().eq(2).text());
-				$("#date").text($(this).children().eq(3).text());
-				$("#pdDate").text($(this).children().eq(4).text());
-				$("#r_type").text($(this).children().eq(5).text());
-				$("#o_rcount").text($(this).children().eq(6).text() + "개");
-				$("#r_people").text($(this).children().eq(7).text() + "명");
-				$("#r_price").text($(this).children().eq(8).text() + "원");
-				$("#pdType").text($(this).children().eq(9).text());
-				$(this).attr({"data-toggle":"modal", "data-target":"#reservationDetailModal"});
-				}
-			});
-		});
-	</script>
-	<jsp:include page="../common/footer.jsp"/>
+   <div class="modal fade" id="reservationDetailModal" role="dialog">
+      <div class="modal-dialog" align="center">
+       
+           <div class="modal-content" style="width:530px;">
+              <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal">&times;</button>
+                 <h4 class="modal-title">상세 예약 내역</h4>
+              </div>
+              <div class="modal-body">
+                 <table id="reservationDetailTable">
+                    <tr>
+                       <th>예약번호</th>
+                       <td colspan="3"><p id="oId"></p></td>
+                    </tr>
+                    <tr>
+                       <th>예약처</th>
+                       <td colspan="3">
+                          <p id="cName"></p>
+                       </td>
+                    </tr>
+                    <tr>
+                       <th>예약자</th>
+                       <td colspan="3">
+                          <p id="paName"></p>
+                       </td>
+                    </tr>
+                    <tr>
+                       <th>숙박기간</th>
+                       <td colspan="3">
+                          <p id="date"></p>
+                       </td>
+                    </tr>
+                    <tr>
+                       <th>예약일</th>
+                       <td colspan="3">
+                          <p id="pdDate"></p>
+                       </td>
+                    </tr>
+                    <tr>
+                       <th style="border-right:3px solid orangered;">객실 타입</th>
+                       <td><p id="r_type"></p></td>
+                       <th style="border-right:3px solid orangered;">객실 수</th>
+                       <td><p id="o_rcount"></p></td>
+                    </tr>
+                    <tr>
+                       <th>인원 수</th>
+                       <td colspan="3"><p id="r_people"></p></td>
+                    </tr>
+                    <tr>
+                       <th>금액</th>
+                       <td><p id="r_price"></p></td>
+                       <th>상태</th>
+                       <td><p id="pdType"></p></td>
+                    </tr>
+                 </table>
+                 
+              </div>
+              <div class="modal-footer" align="center">
+              </div>
+           </div>
+         
+        </div>
+   </div>
+   
+   <script>
+      $(function(){
+         <% for(int i = 0; i < 11; i++){%>
+         $("#reservationTable tr").eq(<%=i%>).children().eq(5).hide();
+         $("#reservationTable tr").eq(<%=i%>).children().eq(6).hide();
+         $("#reservationTable tr").eq(<%=i%>).children().eq(7).hide();
+         $("#reservationTable tr").eq(<%=i%>).children().eq(8).hide();
+         <% } %>
+         $("#reservationTable tr").click(function(){
+            if($(this).children().eq(5).text()!=''){
+            $("#oId").text($(this).children().eq(0).text());
+            $("#cName").text($(this).children().eq(1).text());
+            $("#paName").text($(this).children().eq(2).text());
+            $("#date").text($(this).children().eq(3).text());
+            $("#pdDate").text($(this).children().eq(4).text());
+            $("#r_type").text($(this).children().eq(5).text());
+            $("#o_rcount").text($(this).children().eq(6).text() + "개");
+            $("#r_people").text($(this).children().eq(7).text() + "명");
+            $("#r_price").text($(this).children().eq(8).text() + "원");
+            $("#pdType").text($(this).children().eq(9).text());
+            $(this).attr({"data-toggle":"modal", "data-target":"#reservationDetailModal"});
+            }
+         });
+      });
+   </script>
+   <jsp:include page="../common/footer.jsp"/>
 
 </body>
 </html>
