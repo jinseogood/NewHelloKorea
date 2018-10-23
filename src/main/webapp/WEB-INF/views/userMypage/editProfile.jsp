@@ -57,6 +57,13 @@
    margin-top:3em;
 }
 
+#editBtn{
+   width:250px;
+   height:35px;
+   margin-left:auto;
+   margin-right:auto;
+}
+
 
 </style>
 <body>
@@ -65,10 +72,9 @@
     <!-- Sign up form -->
     <jsp:include page="../common/userMenubar.jsp"/>
    
-    <form action="editProfile.um" method="post" encType="multipart/form-data" id="">
+    <form action="editProfile.um" method="post" encType="multipart/form-data" id="editForm">
         <!-- Sign up card -->
         <div class="card person-card">
-        
             <div class="card-body">
                 <!-- Sex image -->
                <c:if test="${a eq null }">  
@@ -92,8 +98,8 @@
             </div>
             <div class="form-group">
                   <label for="nickname" class="col-form-label">nickname</label>
-                  <input type="text" class="form-control" id="nickname" name="nickname"placeholder="${m.nickname }" required>
-                   <a onclick="nicknameCheck()">중복 체크 </a>
+                  <input type="text" class="form-control" id="nickname" name="nickname"placeholder="${m.nickname }">
+                  <a onclick="nicknameCheck()" required="" >중복 체크</a> 
              </div>
               <div class="form-group">
                   <label for="interest" class="col-form-label">interest</label>
@@ -106,12 +112,12 @@
              </div>
              <div class="form-group">
                   <label for="profile" class="col-form-label">profile</label>
-                  <input type="file" class="form-control" id="profile" name="photo"  required>
+                  <input type="file" class="form-control" id="profile" name="photo" >
              </div>
              
         </div>
         <div style="margin-top: 1em;">
-            <button type="submit" class="btn btn-primary btn-lg btn-block">수정 완료</button>
+            <button type="button" onclick="reflash()" id="editBtn"class="btn btn-primary btn-lg btn-block">수정 완료</button>
         </div>
         </form>
 </div>
@@ -137,11 +143,17 @@
 
       });
       
+   }
+   
+   function reflash(){
+      alert("수정이 완료 되었습니다 ");
       
+      
+      $("#editForm").submit();
+     
       
    }
    
-
 </script>
    
 </body>

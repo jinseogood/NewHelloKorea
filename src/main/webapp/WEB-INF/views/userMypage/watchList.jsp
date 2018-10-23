@@ -7,75 +7,77 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	#goodListTable{
-		margin-top:80px;
-		width:700px;
-		border-collapse: collapse;
-	    text-align: center;
-	    line-height: 1.5;
-	}
+   #goodListTable{
+      margin-top:80px;
+      width:700px;
+      border-collapse: collapse;
+       text-align: center;
+       line-height: 1.5;
+   }
  tr{
-		height:30px;
-	}
+      height:30px;
+   }
  thead th{
-		padding: 10px;
-	    font-weight: bold;
-	    text-align: center;
-	    vertical-align: top;
-	    color: #369;
-	    border-bottom: 3px solid #036;
-	}
-	 tbody th {
-	    padding: 10px;
-	    font-weight: bold;
-	    text-align: center;
-	    vertical-align: top;
-	    border-bottom: 1px solid #ccc;
-	    background: #f3f6f7;
-	}
-	 td {
-	    padding: 10px;
-	    vertical-align: top;
-	    border-bottom: 1px solid #ccc;
-	}
-	#foodListTable{
-		margin-top:80px;
-		width:700px;
-		border-collapse: collapse;
-	    text-align: center;
-	    line-height: 1.5;
-	}
-	#entertainmentTable{
-		margin-top:80px;
-		width:700px;
-		border-collapse: collapse;
-	    text-align: center;
-	    line-height: 1.5;
-	
-	}
+      padding: 10px;
+       font-weight: bold;
+       text-align: center;
+       vertical-align: top;
+       color: #369;
+       border-bottom: 3px solid #036;
+   }
+    tbody th {
+       padding: 10px;
+       font-weight: bold;
+       text-align: center;
+       vertical-align: top;
+       border-bottom: 1px solid #ccc;
+       background: #f3f6f7;
+   }
+    td {
+       padding: 10px;
+       vertical-align: top;
+       border-bottom: 1px solid #ccc;
+   }
+   #foodListTable{
+      margin-top:80px;
+      width:700px;
+      border-collapse: collapse;
+       text-align: center;
+       line-height: 1.5;
+   }
+   #entertainmentTable{
+      margin-top:80px;
+      width:700px;
+      border-collapse: collapse;
+       text-align: center;
+       line-height: 1.5;
+   
+   }
+   .foodDiv{
+      width:100%;
+      height:800px;;
+   
+   }
+   .entertainmentDiv{
+      width:100%;
+      height:800px;;
+   
+   }
 </style>
-<script type="text/javascript" src="${ contextPath }/resources/js/jquery-1.11.2.min.js"></script>      		<!-- jQuery -->
-<script type="text/javascript" src="${ contextPath }/resources/js/bootstrap.min.js"></script>					<!-- bootstrap js -->
-<script type="text/javascript" src="${ contextPath }/resources/js/jquery.flexslider-min.js"></script>			<!-- flexslider js -->
+<script type="text/javascript" src="${ contextPath }/resources/js/jquery-1.11.2.min.js"></script>            <!-- jQuery -->
+<script type="text/javascript" src="${ contextPath }/resources/js/bootstrap.min.js"></script>               <!-- bootstrap js -->
+<script type="text/javascript" src="${ contextPath }/resources/js/jquery.flexslider-min.js"></script>         <!-- flexslider js -->
 <script type="text/javascript" src="${ contextPath }/resources/js/templatemo-script.js"></script>  
 </head>
 <body>
 
-	
-	<jsp:include page="../common/menubar.jsp"/>
-	<div class="mainDiv">
-		<jsp:include page="../common/userMenubar.jsp"/>
-		<div class="row">
-                        <div class="col-md-12">
-                            <!--breadcrumbs start -->
-                            <ul class="breadcrumb">
-                                <li><a href="index.jsp"><i class="fa fa-home"></i> Home</a></li>
-                                <li><a>관심목록</a></li>
-                            </ul>
-                            <!--breadcrumbs end -->
-                        </div>
-                    </div>
-		<div role="tabpanel">
+   
+   <jsp:include page="../common/menubar.jsp"/>
+   <div class="mainDiv">
+      <jsp:include page="../common/userMenubar.jsp"/>
+   
+      <div role="tabpanel">
+
 
 		  <!-- Nav tabs -->
 		 
@@ -169,18 +171,19 @@
 		    			</table>
 		    		</div>
 		    </div>
+
   </div>
 
 </div>
-	
-	</div>
-	
+   
+   </div>
+<jsp:include page="../common/footer.jsp"/>
+   
 <script>
   $(function () {
     $('#myTab a:last').tab('show')
   })
 </script>
-<jsp:include page="../common/footer.jsp"/>
 
 </body>
 </html>

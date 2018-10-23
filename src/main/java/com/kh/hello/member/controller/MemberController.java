@@ -72,7 +72,6 @@ public class MemberController {
 
 		String encPassword = passwordEncoder.encode(m.getPassword());
 
-		/*		System.out.println("암호화 : "+encPassword);*/
 		m.setPassword(encPassword);
 
 
@@ -86,7 +85,6 @@ public class MemberController {
 			System.out.println("mid : " + mid);
 
 			model.addAttribute("mid", mid);
-
 			return "member/addUserInfo";
 
 		}else{
