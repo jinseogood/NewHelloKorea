@@ -565,20 +565,6 @@
 			<c:if test="${!empty sessionScope.loginUser}">
 			<script>
 			
-			$(function(){
-				$(".goodBtn").click(function(){
-					if($(this).children("i").hasClass("fa fa-heart tm-home-box-2-icon border-right") == true){
-						$(this).children("i").removeClass("fa fa-heart tm-home-box-2-icon border-right");
-						$(this).children("i").addClass("fa fa-heart-o tm-home-box-2-icon border-right");
-					}else if($(this).children("i").hasClass("fa fa-heart-o tm-home-box-2-icon border-right") == true){
-						$(this).children("i").removeClass("fa fa-heart-o tm-home-box-2-icon border-right");
-						$(this).children("i").addClass("fa fa-heart tm-home-box-2-icon border-right");
-					}
-					
-				});
-			});
-			
-			
 			function btnGood(contenttypeid, contentid, cid){
 				console.log(contenttypeid);
 				console.log(contentid);
@@ -646,6 +632,18 @@
 			</script>
 			</c:if>
 			<script>
+			$(function(){
+				$(".goodBtn").click(function(){
+					if($(this).children("i").hasClass("fa fa-heart tm-home-box-2-icon border-right") == true){
+						$(this).children("i").removeClass("fa fa-heart tm-home-box-2-icon border-right");
+						$(this).children("i").addClass("fa fa-heart-o tm-home-box-2-icon border-right");
+					}else if($(this).children("i").hasClass("fa fa-heart-o tm-home-box-2-icon border-right") == true){
+						$(this).children("i").removeClass("fa fa-heart-o tm-home-box-2-icon border-right");
+						$(this).children("i").addClass("fa fa-heart tm-home-box-2-icon border-right");
+					}
+					
+				});
+			});
 			function detailView(contentid,contenttypeid,cid){
 				location.href="${contextPath}/detailHotel?contentid="+contentid+"&contenttypeid="+contenttypeid+"&cid="+cid;
 			}

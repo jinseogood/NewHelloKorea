@@ -88,6 +88,7 @@
 					sessionStorage.setItem("cat3", "");
 					cat3 = sessionStorage.getItem("cat3");
 				}
+				
 				if(sessionStorage.getItem("contenttypeid") == null){
 					contenttypeid = 0;
 				}else if(sessionStorage.getItem("contenttypeid") != null){
