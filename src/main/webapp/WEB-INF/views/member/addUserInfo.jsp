@@ -32,6 +32,7 @@ input{
 		height:500px;
 		margin-left:auto;
 		margin-right:auto;
+		margin-top:100px;
 		
 	}
 	
@@ -42,12 +43,11 @@ input{
 	#insertTable{
 		 margin-top:100px;
 		width:700px;
-		border:1px solid lightgray;
 		margin-left:auto;
 		margin-right:auto;
 	}
 	#insertTable tr{
-		height:40px;
+		height:55px;
 		border-top:1px solid lightgray;
 		border-bottom:1px solid lightgray;
 	}
