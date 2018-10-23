@@ -115,7 +115,7 @@ public class UserController {
 		
 		ArrayList<MemberGoods> goodsList = ms.selectGoodsList(mId);
 		
-		System.out.println("goodList : "+ goodsList);
+		//System.out.println("goodList : "+ goodsList);
 		
 		model.addAttribute("goodsList", goodsList);
 		return "userMypage/watchList";

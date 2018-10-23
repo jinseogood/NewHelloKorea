@@ -117,7 +117,7 @@
 				</div> 
 		    </div>
 		    <div role="tabpanel" class="tab-pane" id="food">
-		    	<div class="foodDiv">
+		    	<div class="foodDiv" style="min-height:600px;">
 		    		<table id="foodListTable" align="center">
 		    			<thead>
 								<tr>
@@ -144,7 +144,7 @@
 		    
 		    </div>
 		    <div role="tabpanel" class="tab-pane" id="entertainment">
-		    		<div class="entertainmentDiv">
+		    		<div class="entertainmentDiv" style="min-height:600px;">
 		    			<table id="entertainmentTable" align="center">
 		    				<thead>
 								<tr>
