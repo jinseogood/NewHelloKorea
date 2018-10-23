@@ -176,8 +176,12 @@
 					var fInfo = $(".fInfoArea");
 					fInfo.html("");
 					output += "<h3>음식점</h3><br>";
-					output += "ㆍ <b>주차 시설</b> : "+myData.parkingfood+"<br>";
-					output += "ㆍ <b>개업일</b> : "+myData.opendatefood+"<br>";
+					if(typeof(myData.parkingfood) == 'undefined'){
+						output += "ㆍ <b>주차 시설</b> : <br>";
+					}else{
+						output += "ㆍ <b>주차 시설</b> : "+myData.parkingfood+"<br>";
+					}
+					//output += "ㆍ <b>개업일</b> : "+myData.opendatefood+"<br>";
 					output += "ㆍ <b>영업 시간</b> : "+myData.opentimefood+"<br>";
 					output += "ㆍ <b>쉬는 날</b> : "+myData.restdatefood+"<br>";
 					output += "ㆍ <b>대표 메뉴</b> : "+myData.firstmenu+"<br>";

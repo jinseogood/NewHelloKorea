@@ -380,15 +380,15 @@
 	</section>
 	<script>
 	
-		var areaCode = 0;
+		var areaCode;
 		var areaCode1;
 		var areaCode2;
-		var sigunguCode = 0;
+		var sigunguCode;
 		var sigunguCode1;
 		var sigunguCode2;
 		var pageNo1 = sessionStorage.setItem("pageNo", 1);
 		var pageNo = sessionStorage.getItem("pageNo");
-		//var pageNo = 1;
+		
 	
 		$(function(){
 			
@@ -406,7 +406,7 @@
 					sigunguCode1 = $("#sigungu1").val();
 					sigunguCode2 = sessionStorage.setItem("sigunguCode", sigunguCode1);
 					sigunguCode = sessionStorage.getItem("sigunguCode");
-					//sigunguCode = $("#sigungu1").val();
+					
 					if(sigunguCode == 0){
 						location.href="${contextPath}/areaAllView.main?areaCode="+areaCode;
 					}else{

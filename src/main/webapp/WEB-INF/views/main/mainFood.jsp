@@ -991,20 +991,39 @@
 			shoppingTheme();
 			mainFoodData();
 		});
+		var contentid;
 		function mainFoodData(){
 			var rowArea = $("#rowArea");
-			//rowArea.html("");
+			rowArea.html("");
 			var contenttypeid = 39;
 			var output = "";
-			$.ajax({
-				url:"mainFoodData.bo",
-				type:"GET",
-				async:false,
-				dataType:"json",
-				success:function(data){console.log("성공?"); console.log(data);
-					
-				},error:function(data){console.log("실패?");console.log(data);}
-			});
+			var num = [8,5,4];
+			var contentidvalue = [2544573, 2368199, 2393103];
+			for(var i = 0; i < contentidvalue.length; i++){
+				contentid = contentidvalue[i];
+				$.ajax({
+					url:"mainFoodData.sub",
+					type:"GET",
+					data:{contenttypeid:contenttypeid, contentid:contentid},
+					dataType:"json",
+					success:function(data){console.log("성공?"); console.log(data);
+						output = "";
+						output += "<div class='col-lg-4 col-md-4 col-sm-6'>";
+						output += "<div class='tm-home-box-1 tm-home-box-1-2 tm-home-box-1-center'>";
+						output += "<img src="+data.response.body.items.item.firstimage+" alt='image' class='img-responsive0' />";
+						output += "<a onclick='detailFoodView("+contentid+","+contenttypeid+")'>";
+						output += "<div class='tm-green-gradient-bg tm-city-price-container'>";
+						output += "<span>"+data.response.body.items.item.title+"</span>";
+						output += "<span>"+num[i]+"건의 리뷰</span>";
+						output += "</div></a></div></div>";
+						document.getElementById("rowArea").innerHTML += output;
+					},error:function(data){console.log("실패?");console.log(data);}
+				});
+			}
+			
+		}
+		function detailFoodView(contentid, contenttypeid){
+			location.href="${contextPath}/detailFood?contenttypeid="+contenttypeid+"&contentid="+contentid;
 		}
 		
 		function shoppingTheme(){
