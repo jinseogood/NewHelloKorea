@@ -1006,6 +1006,7 @@
 					type:"GET",
 					data:{contenttypeid:contenttypeid, contentid:contentid},
 					dataType:"json",
+					async:false,
 					success:function(data){console.log("성공?"); console.log(data);
 						output = "";
 						output += "<div class='col-lg-4 col-md-4 col-sm-6'>";
