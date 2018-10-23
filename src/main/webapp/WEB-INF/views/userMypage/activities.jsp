@@ -77,7 +77,7 @@
 					<td>Q</td>
 					</c:if>
 					<td>${item.likey }</td>
-					
+					<td>${item.rCount }</td>
 					</tr>
 			</c:forEach>
 					</tbody>
