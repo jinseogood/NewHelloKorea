@@ -68,7 +68,6 @@
 		
 		function translateVal(){
 			var tVal=$(".goog-te-combo").val();
-			console.log("val : " + tVal);
 		  
 			$.ajax({
 				url:"translateVal",
@@ -86,8 +85,6 @@
 		function changeCUR(){
 			var cur=$("#currency").val();
 			
-			console.log(cur);
-			
 			if(cur == null || cur == "NO"){
 				cur="KRW";
 			}
@@ -98,8 +95,6 @@
 				data:{cur:cur},
 				dataType:"json",
 				success:function(data){
-					console.log(data);
-					
 					if(data.length > 0){
 						var sCur;
 						
@@ -109,25 +104,19 @@
 							}
 						}
 						
-						console.log("sCur : " + sCur);
 						sCur=sCur.replace(",", ".");
-						
-						console.log(sCur);
 						
 						$.ajax({
 							url:"currencySetting.pay",
 							type:"POST",
 							data:{cur:cur, sCur:sCur},
 							success:function(data){
-								console.log(data);
-								
 								if(data == 1){
 									location.reload();
 								}
 								else{
 									alert("통화 변경 실패");
 								}
-								
 							},
 							error:function(data){
 								console.log(data);
@@ -137,7 +126,6 @@
 					else{
 						alert("환율 API 요청 만료");
 					}
-					
 				},
 				error:function(data){
 					console.log(data);

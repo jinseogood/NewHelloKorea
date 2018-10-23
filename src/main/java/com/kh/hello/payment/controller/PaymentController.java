@@ -45,33 +45,22 @@ public class PaymentController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static String URL_PAYPAL_VALIDATE; // PDT데이터를 페이팔로 보낼 서버주소
-
-	// PDT 첫번째 응답 변수 선언
-	private static final String PARAM_TX = "tx";
-	private static final String PARAM_CMD = "cmd";
-	private static final String PARAM_CMD_VALUE = "_notify-synch";
-	private static final String PARAM_AT = "at";
 	private static String PARAM_AT_VALUE;
-	
-	private static final String RESPONSE_SUCCESS = "SUCCESS";
-	private static final String RESPONSE_FAIL = "FAIL";
-
 	static
 	{
 		URL_PAYPAL_VALIDATE = "https://www.sandbox.paypal.com/cgi-bin/webscr";
 		PARAM_AT_VALUE = "p7Hy0ZXi_EUdtMCi0MwQG8PTrbJUnK4KbhtazB7r9RPniS9YsBQZ0nlI5Sm";
 	}
 
-	private static final String PARAM_ITEM_NAME = "item_name";    // 상품이름
-	private static final String PARAM_ITEM_NUMBER = "item_number";   // 상품번호
-	private static final String PARAM_PAYMENT_STATUS = "payment_status";       // 결제 상태
-	private static final String PARAM_MC_GROSS = "mc_gross";    // 페이팔 결제금액
-	private static final String PARAM_MC_CURRENCY = "mc_currency";   // 화폐
-	private static final String PARAM_TXN_ID = "txn_id";     // 거래번호
-	private static final String PARAM_PAYER_EMAIL = "payer_email";   // 페이팔 구매자계정 이메일
-	private static final String PARAM_QUANTITY = "quantity";	// 수량
-	private static final String PARAM_PAYMENT_DATE = "payment_date";	// 결제일
-	private static final String PARAM_CUSTOM = "custom";     // 주문자 정보
+	// PDT 첫번째 응답 변수 선언
+	private static final String PARAM_CMD = "cmd";
+	private static final String PARAM_CMD_VALUE = "_notify-synch";
+	private static final String PARAM_AT = "at";
+	
+	private static final String RESPONSE_SUCCESS = "SUCCESS";
+	private static final String RESPONSE_FAIL = "FAIL";
+
+	private static final String PARAM_CUSTOM = "custom";     // 주문자 정보 및 주문 상세정보
 	
 	//결제 페이지 이동
 	@RequestMapping(value="paymentDetailView.pay")
@@ -117,22 +106,9 @@ public class PaymentController {
 			pw.println(str);
 			pw.close();
 
-			String headerType=uc.getContentType();
-			BufferedReader in;
-			if(headerType.toUpperCase().indexOf("UTF-8") != -1){
-				System.out.println("utf8??");
-				in = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
-			}
-			else{
-				System.out.println("euc-kr??");
-				in = new BufferedReader(new InputStreamReader(uc.getInputStream(), "EUC-KR"));
-			}
-			
-			//BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF8"));
+			BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF8"));
 
 			String res = in.readLine();
-			
-			
 			int mId=0;
 			
 			if (res.equals(RESPONSE_SUCCESS)) {
@@ -145,49 +121,18 @@ public class PaymentController {
 				while ((res = in.readLine()) != null) {
 					temp = res.split("=");
 					if (temp.length == 2) {
-						//System.out.println("res : " + res);
 						vars.put(temp[0], URLDecoder.decode(temp[1], "UTF-8"));
 						System.out.println("decode : " + URLDecoder.decode(temp[1], "EUC-KR"));
 						logger.info("{}{}{}",new Object[]{temp[0],":",temp[1]});
 					}
 				}
 
-				/*//상품명
-				String itemName = (String) vars.get(PARAM_ITEM_NAME);
-				//상품 번호
-				int itemNumber = Integer.parseInt((String) vars.get(PARAM_ITEM_NUMBER));
-				//결제 상태
-				String paymentStatus = (String) vars.get(PARAM_PAYMENT_STATUS);
-				//결제 금액
-				double paymentAmount = Double.parseDouble((String) vars.get(PARAM_MC_GROSS));
-				//통화
-				String paymentCurrency = (String) vars.get(PARAM_MC_CURRENCY);
-				//구매자 페이팔 이메일
-				String payerEmail = (String) vars.get(PARAM_PAYER_EMAIL);
-				//상품 수량
-				int quantity = Integer.parseInt((String) vars.get(PARAM_QUANTITY));
-				//결제일
-				String payDate = (String) vars.get(PARAM_PAYMENT_DATE);*/
-				//주문자 정보 및 주문 추가정보
+				//주문자 정보 및 주문 상세 정보
 				String custom = (String) vars.get(PARAM_CUSTOM);
-				
-				/*System.out.println("itemName : " + itemName);
-				System.out.println("itemNumber : " + itemNumber);
-				System.out.println("paymentStatus : " + paymentStatus);
-				System.out.println("paymentAmount : " + paymentAmount);
-				System.out.println("paymentCurrency : " + paymentCurrency);
-				System.out.println("payerEmail : " + payerEmail);
-				System.out.println("quantity : " + quantity);
-				System.out.println("payDate : " + payDate);*/
-				System.out.println("custom : " + custom);
 				
 				String[] orderInfo=custom.split(",");
 				
 				mId=Integer.parseInt(orderInfo[0]);
-				
-				for(int i=0;i<orderInfo.length;i++){
-					System.out.println("orderInfo[" + i + "] : " + orderInfo[i]);
-				}
 				
 				Payment p=new Payment();
 				p.setmId(Integer.parseInt(orderInfo[0]));
@@ -223,18 +168,12 @@ public class PaymentController {
 				
 				int rInsert=ps.insertAllPayment(p, pdList);
 				
-				//System.out.println("rInsert : " + rInsert);
-				
 				if(rInsert > 0){
 					int rUpdate=ps.updateReservation(Integer.parseInt(orderInfo[6]));
-					
-					//System.out.println("rUpdate : " + rUpdate);
 					
 					if(rUpdate > 0){
 						if(pdList.size() == 2){
 							int rPoint=ps.insertPoint(Integer.parseInt(orderInfo[0]), Integer.parseInt(orderInfo[5]));
-							
-							//System.out.println("rPoint : " + rPoint);
 							
 							if(rPoint > 0){
 								result=1;
@@ -270,12 +209,6 @@ public class PaymentController {
 			if(result > 0){
 				Payment p=ps.selectPayInfo(mId);
 				ArrayList<PayDetail> pdList=ps.selectPayDetailInfo(p.getPaId());
-				
-				if(pdList.size() == 2){
-					pdList.get(0).setPrice(pdList.get(0).getPrice()-pdList.get(1).getPrice());
-				}
-				
-				//pdList.get(0).setPrice(paymentAmount);
 				
 				Reservation2 r=ps.selectReservation(p.getPaId());
 				
