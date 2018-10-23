@@ -53,7 +53,7 @@
 	</bean>
 	<bean id="oAuth2Parameters" class="org.springframework.social.oauth2.OAuth2Parameters">
 		<property name="scope" value="email" />
-		<property name="redirectUri" value="https://localhost:8443/hello/facebookCallback.me" />
+		<property name="redirectUri" value="https://192.168.20.206:8443/hello/facebookCallback.me" />
 	</bean>
 
 
