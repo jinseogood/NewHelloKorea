@@ -204,6 +204,12 @@
 												output += "<i class='far fa-star' style='font-size:20px;'></i>";
 												output += "<i class='far fa-star' style='font-size:20px;'></i>";
 												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+											}else if(ddatta.bb.grade == 0){
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
 											}else if(ddatta.bb.grade > 0 && ddatta.bb.grade <= 0.5){
 												output += "<i class='fas fa-star-half-alt' style = 'font-size:20px'></i>";//별반
 												output += "<i class='far fa-star' style = 'font-size:20px'></i>";
@@ -333,6 +339,12 @@
 												dataType:"json",
 												success:function(ddatta){console.log("success");
 												if(ddatta.bb == null){
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												}else if(ddatta.bb.grade == 0){
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
@@ -515,6 +527,12 @@
 												output += "<i class='far fa-star' style='font-size:20px;'></i>";
 												output += "<i class='far fa-star' style='font-size:20px;'></i>";
 												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+											}else if(ddatta.bb.grade == 0){
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												output += "<i class='far fa-star' style='font-size:20px;'></i>";
 											}else if(ddatta.bb.grade > 0 && ddatta.bb.grade <= 0.5){
 												output += "<i class='fas fa-star-half-alt' style = 'font-size:20px'></i>";//별반
 												output += "<i class='far fa-star' style = 'font-size:20px'></i>";
@@ -644,6 +662,12 @@
 												dataType:"json",
 												success:function(ddatta){console.log("success");
 												if(ddatta.bb == null){
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												}else if(ddatta.bb.grade == 0){
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
@@ -865,6 +889,12 @@
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												}else if(ddatta.bb.grade == 0){
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 												}else if(ddatta.bb.grade > 0 && ddatta.bb.grade <= 0.5){
 													output += "<i class='fas fa-star-half-alt' style = 'font-size:20px'></i>";//별반
 													output += "<i class='far fa-star' style = 'font-size:20px'></i>";
@@ -979,6 +1009,12 @@
 													dataType:"json",
 													success:function(ddatta){console.log("success");
 													if(ddatta.bb == null){
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													}else if(ddatta.bb.grade == 0){
 														output += "<i class='far fa-star' style='font-size:20px;'></i>";
 														output += "<i class='far fa-star' style='font-size:20px;'></i>";
 														output += "<i class='far fa-star' style='font-size:20px;'></i>";
@@ -1143,6 +1179,12 @@
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+												}else if(ddatta.bb.grade == 0){
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													output += "<i class='far fa-star' style='font-size:20px;'></i>";
 												}else if(ddatta.bb.grade > 0 && ddatta.bb.grade <= 0.5){
 													output += "<i class='fas fa-star-half-alt' style = 'font-size:20px'></i>";//별반
 													output += "<i class='far fa-star' style = 'font-size:20px'></i>";
@@ -1257,6 +1299,12 @@
 													dataType:"json",
 													success:function(ddatta){console.log("success");
 													if(ddatta.bb == null){
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+														output += "<i class='far fa-star' style='font-size:20px;'></i>";
+													}else if(ddatta.bb.grade == 0){
 														output += "<i class='far fa-star' style='font-size:20px;'></i>";
 														output += "<i class='far fa-star' style='font-size:20px;'></i>";
 														output += "<i class='far fa-star' style='font-size:20px;'></i>";

@@ -201,24 +201,27 @@
 						var output = "";
 						var count = 0;
 						for (var i = 0; i < myData.length; i++){
-							count++;
-							output = "";
-							contenttypeid = myData[i].contenttypeid;
-							contentid = myData[i].contentid;
-							mapy = myData[i].mapy;
-							mapx = myData[i].mapx;
-							output += "<div class='col-lg-3 col-md-3 col-sm-6 col-xs-6 col-xxs-12'>";
-							output += "<div class='tm-home-box-2'>";
-							if(myData[i].firstimage == null){
-								output += "<img src='${contextPath}/resources/img/noImage.gif' alt='image' class='img-responsive2'>";
-							}else{
-								output += "<img src="+myData[i].firstimage+" alt='image' class='img-responsive2'>";
-							}
-							output += "<h3 class='goDetailView' onclick='goDetailGame("+contentid+","+contenttypeid+","+mapy+","+mapx+");'>"+myData[i].title+"</h3>";
-							output += "</div></div>";
-							document.getElementById("rowGameArea").innerHTML += output;
-							if(count == 4){
-								return;
+							if(myData[i].firstimage != null){
+								count++;
+								output = "";
+								contenttypeid = myData[i].contenttypeid;
+								contentid = myData[i].contentid;
+								mapy = myData[i].mapy;
+								mapx = myData[i].mapx;
+								output += "<div class='col-lg-3 col-md-3 col-sm-6 col-xs-6 col-xxs-12'>";
+								output += "<div class='tm-home-box-2'>";
+								if(myData[i].firstimage == null){
+									output += "<img src='${contextPath}/resources/img/noImage.gif' alt='image' class='img-responsive2'>";
+								}else{
+									output += "<img src="+myData[i].firstimage+" alt='image' class='img-responsive2'>";
+								}
+								output += "<h3 class='goDetailView' onclick='goDetailGame("+contentid+","+contenttypeid+","+mapy+","+mapx+");'>"+myData[i].title+"</h3>";
+								output += "</div></div>";
+								document.getElementById("rowGameArea").innerHTML += output;
+								if(count == 4){
+									return;
+								}
+								
 							}
 						}
 					},
@@ -412,7 +415,7 @@
 			
 			<div class="row">
 				<div class="col-lg-12">
-					<p class="home-description">Holiday is free Bootstrap v3.3.5 responsive template for tour and travel websites. You can download and use this layout for any purpose. You do not need to provide a credit link to us. If you have any question, feel free to <a href="http://www.facebook.com/templatemo" target="_parent">contact us</a>. Credit goes to <a rel="nofollow" href="http://unsplash.com" target="_parent">Unspash</a> for images used in this template.</p>					
+					<p class="home-description"></p>					
 				</div>
 			</div>		
 		</div>
