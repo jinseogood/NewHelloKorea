@@ -1,0 +1,30 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Room">
+	<resultMap type="Room" id="roomResultSet">
+		<id property="rId" column="R_ID"/>
+		<result property="roomType" column="R_TYPE"/>
+		<result property="roomCount" column="R_COUNT"/>
+		<result property="roomPrice" column="R_PRICE"/>
+		<result property="roomPeople" column="R_LIMIT"/>
+		<result property="cId" column="C_ID"/>
+	</resultMap>
+   
+	<!-- 객실 등록 -->
+	<insert id="insertRoom" parameterType="Room">
+		INSERT INTO ROOM (R_ID, R_TYPE, R_COUNT, R_PRICE, R_LIMIT, C_ID) 
+		VALUES (SEQ_R_ID.NEXTVAL, #{roomType}, #{roomCount}, #{roomPrice}, #{roomPeople}, SEQ_C_ID.CURRVAL)
+	</insert>
+	
+	<!-- 객실 수정 -->
+	<update id="updateProduct" parameterType="Room">
+		UPDATE ROOM
+		SET R_COUNT = #{roomCount}, R_PRICE = #{roomPrice}
+		WHERE R_ID = #{rId}
+		AND C_ID = #{cId}
+	</update>
+	
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Question">
+	<!-- 문의 내역 관리 -->
+	<!-- 문의 내역 조회 테이블 값 -->
+	<resultMap type="Question" id="questionResultSet">
+		<id property="qRecordId" column="Q_RECORD_ID" />
+		<result property="sendId" column="SEND_ID" />
+		<result property="title" column="TITLE" />
+		<result property="sendDate" column="SEND_DATE"/>
+		<result property="content" column="CONTENT" />
+		<result property="pDate" column="P_DATE" />
+		<result property="msgId" column="MSG_ID" />
+	</resultMap>
+
+	<!-- 문의 리스트 카운트 -->
+	<select id="getQuestionListCount" resultType="_int">
+	    SELECT COUNT(*)
+	    FROM ( SELECT Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+               FROM ( SELECT ROWNUM AS Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+                      FROM MESSAGE
+                      WHERE M_LEVEL = 'Q' ))
+	</select>
+	
+	<!-- 문의 리스트 -->
+	<select id="selectQuestionList" resultMap="questionResultSet">
+	    SELECT Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+        FROM ( SELECT ROWNUM AS Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+               FROM MESSAGE
+               WHERE M_LEVEL = 'Q' )
+        ORDER BY Q_RECORD_ID DESC
+	</select>
+	
+	<!-- 문의일로 조회 페이징 -->
+	<select id="getSearchDateQuestionListCount" resultType="_int">
+	      SELECT COUNT(*)
+	      FROM ( SELECT Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+                 FROM ( SELECT ROWNUM AS Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+                        FROM MESSAGE
+                        WHERE M_LEVEL = 'Q' )
+                 WHERE TO_CHAR(SEND_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate})
+	</select>
+	
+	<!-- 문의일로 조회 -->
+	<select id="selectSearchDateQuestionList" resultMap="questionResultSet">
+	      SELECT Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+          FROM ( SELECT ROWNUM AS Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+                 FROM MESSAGE
+                 WHERE M_LEVEL = 'Q' )
+          WHERE TO_CHAR(SEND_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate}
+          ORDER BY Q_RECORD_ID DESC
+    </select>
+	
+	<!-- 검색 페이징 -->
+	<select id="getSearchWordQuestionListCount" resultType="_int">
+		SELECT COUNT(*)
+        FROM ( SELECT Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+               FROM ( SELECT ROWNUM AS Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+                      FROM MESSAGE
+                      WHERE M_LEVEL = 'Q' )
+               WHERE 1=1
+               <choose>
+			     <when test="qRecordId != -99">
+				     AND Q_RECORD_ID = #{qRecordId}
+			     </when>
+			     <when test="sendId != -99">
+				     AND SEND_ID = #{sendId}
+			     </when>
+			     <otherwise>
+			         AND P_DATE IS NULL
+			     </otherwise>
+		       </choose>)
+	</select>
+	
+	<!-- 검색 조회 -->
+	<select id="selectSearchWordQuestionList" resultMap="questionResultSet">
+		SELECT Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+        FROM ( SELECT ROWNUM AS Q_RECORD_ID, SEND_ID, TITLE, SEND_DATE, CONTENT, P_DATE, MSG_ID
+               FROM MESSAGE
+               WHERE M_LEVEL = 'Q' )
+        WHERE 1=1
+         <choose>
+			<when test="qRecordId != -99">
+				AND Q_RECORD_ID = #{qRecordId}
+			</when>
+			<when test="sendId != -99">
+				AND SEND_ID = #{sendId}
+			</when>
+			<otherwise>
+			    AND P_DATE IS NULL
+			</otherwise>
+		</choose>
+        ORDER BY Q_RECORD_ID DESC
+	</select> 
+
+</mapper>

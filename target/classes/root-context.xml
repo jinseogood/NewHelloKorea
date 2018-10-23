@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+   						http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+   						http://www.springframework.org/schema/context
+   						http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSession" />
+	</bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe" />
+		<property name="username" value="hello" />
+		<property name="password" value="hello" />
+		<property name="defaultAutoCommit" value="false" />
+	</bean>
+	<!-- Google 소셜 로그인 연결 설정 -->
+	<bean id="googleConnectionFactory"
+		class="org.springframework.social.google.connect.GoogleConnectionFactory">
+		<constructor-arg value="219085199320-bjrhk71n6e3l12d6ec2k8t1q28u7g866.apps.googleusercontent.com" />
+		<constructor-arg value="Ese_xQ-mvvhZnlrJH6wj5ZwK" />
+	</bean>
+
+	<bean id="googleOAuth2Parameters" class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope" value="https://www.googleapis.com/auth/userinfo.email"/>
+		<property name="redirectUri" value="https://localhost:8443/hello/googleSignInCallback.me" />
+	</bean>
+      
+
+	<!-- 트랜젝션 매니져 bean등록 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- Facebook 소셜 로그인 연결 설정 -->
+
+	<bean id="connectionFactory"
+		class="org.springframework.social.facebook.connect.FacebookConnectionFactory">
+		<constructor-arg value="2078468609042330" />
+		<constructor-arg value="cf259b8538e94e36277db57c349052f1" />
+	</bean>
+	<bean id="oAuth2Parameters" class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope" value="email" />
+		<property name="redirectUri" value="https://localhost:8443/hello/facebookCallback.me" />
+	</bean>
+
+
+	<!-- 어노테이션으로 트랜젝션 매니저를 설정하기 위해 추가해야 하는 설정 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 트랜젝션 매니져를 이용해 tx advice를 정의한다. -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="select*" read-only="true" rollback-for="Exception" />
+			<tx:method name="insert*" rollback-for="Exception"
+				propagation="REQUIRED" isolation="SERIALIZABLE" />
+			<tx:method name="update*" rollback-for="Exception"
+				propagation="REQUIRED" isolation="SERIALIZABLE" />
+			<tx:method name="delete*" rollback-for="Exception"
+				propagation="REQUIRED" isolation="SERIALIZABLE" />
+		</tx:attributes>
+	</tx:advice>
+	<tx:annotation-driven />
+	
+    <!-- Mail -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="helloKoreaMailService@gmail.com" />
+		<property name="password" value="comekorea0!" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.debug">true</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.mime.charset">UTF-8</prop>
+				<prop key="mail.transport.protocol">smtp</prop>
+			</props>
+		</property>
+	</bean>
+	
+</beans>

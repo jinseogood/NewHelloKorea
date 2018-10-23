@@ -1,0 +1,20 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberPoint">
+	<resultMap type="MemberPoint" id="MemberPointResultSet">
+		<id property="pId" column="P_ID" />
+		<result property="pDate" column="P_DATE" />
+		<result property="amount" column="AMOUNT" />
+		<result property="paType" column="PA_TYPE" />
+	</resultMap>
+	
+	<select id="selectMemberPonit" parameterType="_int" resultMap="MemberPointResultSet">
+	SELECT P_ID,P_DATE,AMOUNT,PA_TYPE
+	FROM POINT
+	WHERE M_ID=#{mId}
+	</select>
+
+</mapper>

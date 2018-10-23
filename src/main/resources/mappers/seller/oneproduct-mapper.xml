@@ -1,0 +1,34 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="OneProduct">
+	<resultMap type="OneProduct" id="oneProductResultSet">
+		<id property="cId" column="C_ID"/>
+		<result property="companyName" column="C_NAME"/>
+		<result property="companyPhone" column="C_PHONE"/>
+		<result property="companyAddress" column="C_ADDRESS"/>
+		<result property="rId" column="R_ID"/>
+		<result property="roomType" column="R_TYPE"/>
+		<result property="roomCount" column="R_COUNT"/>
+		<result property="roomPrice" column="R_PRICE"/>
+		<result property="roomPeople" column="R_LIMIT"/>
+		<result property="crId" column="CR_ID"/>
+		<result property="term" column="CR_TERM"/>
+		<result property="crDate" column="CR_DATE"/>
+		<result property="apDate" column="AP_DATE"/>
+		<result property="crEDate" column="CR_EDATE"/>
+	</resultMap>
+	
+	<!-- 선택 상품 조회 -->
+	<select id="selectOneProduct" resultMap="oneProductResultSet" parameterType="arraylist">
+		SELECT C_ID, C_NAME, C_PHONE, C_ADDRESS, R_ID, R_TYPE, R_COUNT, R_PRICE, R_LIMIT, CR_ID, CR_TERM, CR_DATE, AP_DATE, CR_EDATE
+		FROM COMPANY
+		JOIN ROOM USING(C_ID)
+		JOIN COM_REGIST USING(C_ID)
+		WHERE C_ID = ${list.get(0)}
+		AND CR_ID = ${list.get(1)}
+	</select>
+	
+</mapper>

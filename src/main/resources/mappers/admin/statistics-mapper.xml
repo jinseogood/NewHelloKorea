@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Statistics">
+   
+     <!-- 국가별 가입자수 결과 셋 -->
+     <resultMap type="NationalStatistics" id="nationalResultSet">
+          <id property="national" column="NATIONAL"/>
+          <result property="count" column="COUNT" />
+     </resultMap>
+     
+     <!-- 관심분야 결과 셋 -->
+     <resultMap type="InterestStatistics" id="interestResultSet">
+          <id property="interest" column="INTEREST"/>
+          <result property="count" column="COUNT" />
+     </resultMap>
+     
+     <!-- 플랫폼 분포 결과 셋 -->
+     <resultMap type="PlatformStatistics" id="platformResultSet">
+          <id property="month" column="MONTH"/>
+          <result property="facebookCount" column="FACEBOOK_COUNT" />
+          <result property="googleCount" column="GOOGLE_COUNT" />
+          <result property="emailCount" column="EMAIL_COUNT" />
+     </resultMap>
+     
+     <!-- 업체 지역 결과 셋 -->
+     <resultMap type="CompanyAreaStatistics" id="companyAreaResultSet">
+          <id property="area" column="AREA"/>
+          <result property="count" column="COUNT" />
+     </resultMap>
+     
+     <!-- 업체 등록기간 결과 셋 -->
+     <resultMap type="CompanyPeriodStatistics" id="companyPeriodResultSet">
+          <id property="period" column="PERIOD"/>
+          <result property="count" column="COUNT" />
+     </resultMap>
+     
+     <!-- 업체 등록 건수 결과 셋 -->
+     <resultMap type="CompanyRegistStatistics" id="companyRegistResultSet">
+          <id property="month" column="MONTH"/>
+          <result property="registCount" column="REGIST_COUNT" />
+          <result property="approvalCount" column="APPROVAL_COUNT" />
+          <result property="terminateCount" column="TERMINATE_COUNT" />
+     </resultMap>
+     
+     <!-- 매출 결과 셋 -->
+     <resultMap type="SalesStatistics" id="salesResultSet">
+          <id property="term" column="TERM"/>
+          <result property="sales" column="SALES" />
+          <result property="profit" column="PROFIT" />
+     </resultMap>
+     
+     <!-- 국가별 가입자수 -->
+     <select id="selectNationalStatistics" resultMap="nationalResultSet">
+         SELECT NATIONAL, COUNT(*) AS COUNT
+         FROM MEMBER
+         WHERE NATIONAL IS NOT NULL
+         GROUP BY NATIONAL
+     </select>
+     
+     <!-- 관심분야 통계 -->
+     <select id="selectInterestStatistics" resultMap="interestResultSet">
+         SELECT INTEREST, COUNT(*) AS COUNT
+         FROM MEMBER
+         WHERE INTEREST IS NOT NULL
+         GROUP BY INTEREST
+     </select>
+     
+     <!-- 플랫폼별 통계 -->
+     <select id="selectPlatformStatistics" parameterType="_int" resultMap="platformResultSet">
+         SELECT RNUM, MONTH, FACEBOOK_COUNT, GOOGLE_COUNT, EMAIL_COUNT
+         FROM ( SELECT ROWNUM AS RNUM, MONTH, FACEBOOK_COUNT, GOOGLE_COUNT, EMAIL_COUNT
+                FROM ( SELECT TO_CHAR(REGIST_DATE,'YYYY-MM') MONTH,
+                              COUNT(CASE WHEN PLATFORM_TYPE='facebook' THEN 1 END) FACEBOOK_COUNT,
+                              COUNT(CASE WHEN PLATFORM_TYPE='google' THEN 1 END) GOOGLE_COUNT,
+                              COUNT(CASE WHEN PLATFORM_TYPE='email' THEN 1 END) EMAIL_COUNT
+                       FROM MEMBER
+                       GROUP BY TO_CHAR(REGIST_DATE,'YYYY-MM') ORDER BY 1 DESC))
+         WHERE RNUM BETWEEN #{row} AND #{row}+4
+     </select>
+     
+     <!-- 업체 등록 지역 통계 -->
+     <select id="selectCompanyAreaStatistics" resultMap="companyAreaResultSet">
+         SELECT SUBSTR(C_ADDRESS,1,3) AS AREA,COUNT(*) AS COUNT
+         FROM COMPANY
+         GROUP BY SUBSTR(C_ADDRESS,1,3)
+     </select>
+     
+     <!-- 업체 등록기간 통계 -->
+     <select id="selectCompanyPeriodStatistics" resultMap="companyPeriodResultSet">
+         SELECT TO_CHAR(CR_TERM) || '개월' AS PERIOD, COUNT(*) AS COUNT
+         FROM COM_REGIST
+         GROUP BY CR_TERM
+         ORDER BY CR_TERM
+     </select>
+     
+     <!-- 업체 등록 건수 통계 -->
+     <select id="selectCompanyRegistStatistics" parameterType="_int" resultMap="companyRegistResultSet">
+         SELECT RNUM, MONTH, REGIST_COUNT, APPROVAL_COUNT, TERMINATE_COUNT
+         FROM ( SELECT ROWNUM AS RNUM, MONTH, REGIST_COUNT, APPROVAL_COUNT, TERMINATE_COUNT
+                FROM ( SELECT TO_CHAR(CR_DATE,'YYYY-MM') MONTH,
+                              COUNT(*) REGIST_COUNT,
+                              COUNT(CASE WHEN CR_STATUS='Y' THEN 1 END) APPROVAL_COUNT,
+                              COUNT(CASE WHEN CR_STATUS='T' THEN 1 END) TERMINATE_COUNT
+                       FROM COM_REGIST
+                       GROUP BY TO_CHAR(CR_DATE,'YYYY-MM') ORDER BY 1 DESC))
+         WHERE RNUM BETWEEN #{row} AND #{row}+4
+     </select>
+     
+     <!-- 월별 매출 리스트 -->
+     <select id="selectSalesStatisticsListCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT TERM, SALES, PREPROFIT-NVL(POINT,0) AS PROFIT
+                FROM ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS SALES, SUM(PRICE*0.15) AS PREPROFIT
+                       FROM PAY_DETAIL
+                       WHERE PD_METHOD = 'C'
+                       AND PA_ID NOT IN ( SELECT PA_ID
+                                          FROM PAY_DETAIL
+                                          WHERE PD_TYPE = 'R')
+                       GROUP BY TO_CHAR(PD_DATE,'YYYY-MM'))
+                LEFT JOIN ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS POINT
+                            FROM PAY_DETAIL
+                            WHERE PD_METHOD = 'P'
+                            GROUP BY TO_CHAR(PD_DATE,'YYYY-MM')) USING(TERM))
+     </select>
+     <!-- 월별 매출 -->
+     <select id="selectSalesStatisticsList" resultMap="salesResultSet">
+         SELECT TERM, SALES, PREPROFIT-NVL(POINT,0) AS PROFIT
+         FROM ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS SALES, SUM(PRICE*0.15) AS PREPROFIT
+                FROM PAY_DETAIL
+                WHERE PD_METHOD = 'C'
+                AND PA_ID NOT IN ( SELECT PA_ID
+                                   FROM PAY_DETAIL
+                                   WHERE PD_TYPE = 'R')
+                GROUP BY TO_CHAR(PD_DATE,'YYYY-MM'))
+         LEFT JOIN ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS POINT
+                     FROM PAY_DETAIL
+                     WHERE PD_METHOD = 'P'
+                     GROUP BY TO_CHAR(PD_DATE,'YYYY-MM')) USING(TERM)
+         ORDER BY TERM DESC
+     </select>
+     
+     <!-- 매출 통계(메인) -->
+     <select id="selectMainSalesStatistics" resultMap="salesResultSet">
+         SELECT ROWNUM, TERM, SALES, PREPROFIT-NVL(POINT,0) AS PROFIT
+         FROM ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS SALES, SUM(PRICE*0.15) AS PREPROFIT
+                FROM PAY_DETAIL
+                WHERE PD_METHOD = 'C'
+                AND PA_ID NOT IN ( SELECT PA_ID
+                                   FROM PAY_DETAIL
+                                   WHERE PD_TYPE = 'R')
+                GROUP BY TO_CHAR(PD_DATE,'YYYY-MM')
+                ORDER BY TERM DESC)
+         LEFT JOIN ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS POINT
+                     FROM PAY_DETAIL
+                     WHERE PD_METHOD = 'P'
+                     GROUP BY TO_CHAR(PD_DATE,'YYYY-MM')
+                     ORDER BY TERM DESC) USING(TERM)
+         WHERE ROWNUM <![CDATA[<]]>= 5
+         ORDER BY TERM DESC
+     </select>
+     
+     <!-- 메인 이번달 수익 -->
+     <select id="selectMainProfit" resultMap="salesResultSet">
+         SELECT TERM, SALES, PREPROFIT-NVL(POINT,0) AS PROFIT
+         FROM ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS SALES, SUM(PRICE*0.15) AS PREPROFIT
+                FROM PAY_DETAIL
+                WHERE PD_METHOD = 'C'
+                AND PA_ID NOT IN ( SELECT PA_ID
+                                   FROM PAY_DETAIL
+                                   WHERE PD_TYPE = 'R')
+                GROUP BY TO_CHAR(PD_DATE,'YYYY-MM'))
+         LEFT JOIN ( SELECT TO_CHAR(PD_DATE,'YYYY-MM') AS TERM, SUM(PRICE) AS POINT
+                     FROM PAY_DETAIL
+                     WHERE PD_METHOD = 'P'
+                     GROUP BY TO_CHAR(PD_DATE,'YYYY-MM')) USING(TERM)
+         WHERE TERM = TO_CHAR(SYSDATE,'YYYY-MM')
+     </select>
+     
+</mapper>

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Report">
+   
+	<!-- 신고 내역 조회 테이블 값 -->
+	<resultMap type="Report" id="reportResultSet">
+		<id property="rRecordId" column="R_RECORD_ID" />
+		<result property="rLevel" column="R_LEVEL" />
+		<result property="mId" column="M_ID"/>
+		<result property="rTarget" column="R_TARGET" />
+		<result property="rDate" column="R_DATE" />
+		<result property="reason" column="REASON" />
+		<result property="result" column="RESULT" />
+		<result property="refId" column="REF_ID" />
+		<result property="rContent" column="R_CONTENT" />
+	</resultMap>
+
+	<!-- 신고 내역 리스트 카운트 -->
+	<select id="selectReportListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		RH.RESULT, RH.REF_ID, B.TEXT AS R_CONTENT
+		FROM REPORT_HISTORY RH
+		JOIN BOARD B ON(RH.REF_ID=B.BID)
+		WHERE R_LEVEL = 0
+		AND REF_ID IN (SELECT REF_ID
+		               FROM REPORT_HISTORY
+		               WHERE R_LEVEL = 0
+		               GROUP BY REF_ID
+		               HAVING COUNT(*) <![CDATA[>]]>=5)
+		UNION ALL
+		SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		RH.REASON, RH.RESULT, RH.REF_ID, R.CONTENT AS R_CONTENT
+		FROM REPORT_HISTORY RH
+		JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+		WHERE R_LEVEL = 1
+		AND REF_ID IN (SELECT REF_ID
+		               FROM REPORT_HISTORY
+		               WHERE R_LEVEL = 1
+		               GROUP BY REF_ID
+		               HAVING COUNT(*) <![CDATA[>]]>= 5)
+		UNION ALL
+		SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		RH.REASON, RH.RESULT, RH.REF_ID, M.CONTENT AS R_CONTENT
+		FROM REPORT_HISTORY RH
+		JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+		WHERE R_LEVEL = 2)
+	</select>
+
+	<!-- 신고 내역 리스트 -->
+	<select id="selectReportList" resultMap="reportResultSet">
+		SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		RH.RESULT, RH.REF_ID, B.TEXT AS R_CONTENT
+		FROM REPORT_HISTORY RH
+		JOIN BOARD B ON(RH.REF_ID=B.BID)
+		WHERE R_LEVEL = 0
+		AND REF_ID IN (SELECT REF_ID
+		               FROM REPORT_HISTORY
+		               WHERE R_LEVEL = 0
+		               GROUP BY REF_ID
+		               HAVING COUNT(*) <![CDATA[>]]>=5)
+		UNION ALL
+		SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		RH.REASON, RH.RESULT, RH.REF_ID, R.CONTENT AS R_CONTENT
+		FROM REPORT_HISTORY RH
+		JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+		WHERE R_LEVEL = 1
+		AND REF_ID IN (SELECT REF_ID
+		               FROM REPORT_HISTORY
+		               WHERE R_LEVEL = 1
+		               GROUP BY REF_ID
+		               HAVING COUNT(*) <![CDATA[>]]>= 5)
+		UNION ALL
+		SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		RH.REASON, RH.RESULT, RH.REF_ID, M.CONTENT AS R_CONTENT
+		FROM REPORT_HISTORY RH
+		JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+		WHERE R_LEVEL = 2
+		ORDER BY R_RECORD_ID DESC
+	</select>
+
+	<!-- 신고일 검색 리스트 -->
+	<select id="selectSearchDateReportListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT R_RECORD_ID, R_LEVEL, R_TARGET, R_DATE, REASON, RESULT, REF_ID, R_CONTENT
+		FROM (SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		             RH.REASON, RH.RESULT, RH.REF_ID, B.TEXT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN BOARD B ON(RH.REF_ID=B.BID)
+		      WHERE R_LEVEL = 0
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 0
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		      RH.RESULT, RH.REF_ID, R.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+		      WHERE R_LEVEL = 1
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 1
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		             RH.RESULT, RH.REF_ID, M.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+		      WHERE R_LEVEL = 2)
+		WHERE TO_CHAR(R_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate})
+	</select>
+
+	<!-- 신고일 검색 -->
+	<select id="selectSearchDateReportList" resultMap="reportResultSet">
+		SELECT R_RECORD_ID, R_LEVEL, R_TARGET, R_DATE, REASON, RESULT, REF_ID, R_CONTENT
+		FROM (SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		             RH.REASON, RH.RESULT, RH.REF_ID, B.TEXT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN BOARD B ON(RH.REF_ID=B.BID)
+		      WHERE R_LEVEL = 0
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 0
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		      RH.RESULT, RH.REF_ID, R.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+		      WHERE R_LEVEL = 1
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 1
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		             RH.RESULT, RH.REF_ID, M.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+		      WHERE R_LEVEL = 2)
+		WHERE TO_CHAR(R_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate}
+		ORDER BY R_RECORD_ID DESC
+	</select>
+
+	<!-- 신고 검색 리스트 카운트 -->
+	<select id="selectSearchWordReportListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT R_RECORD_ID, R_LEVEL, R_TARGET, R_DATE, REASON, RESULT, REF_ID, R_CONTENT
+		FROM (SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		             RH.REASON, RH.RESULT, RH.REF_ID, B.TEXT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN BOARD B ON(RH.REF_ID=B.BID)
+		      WHERE R_LEVEL = 0
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 0
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		      RH.RESULT, RH.REF_ID, R.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+		      WHERE R_LEVEL = 1
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 1
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		             RH.RESULT, RH.REF_ID, M.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+		      WHERE R_LEVEL = 2)
+		      WHERE 1=1
+		<choose>
+			<when test="rRecordId != -99">
+				AND R_RECORD_ID = #{rRecordId}
+			</when>
+			<when test="rTarget != -99">
+				AND R_TARGET = #{rTarget}
+			</when>
+			<otherwise>
+				AND RESULT IS NULL
+			</otherwise>
+		</choose>)
+	</select>
+	
+	<!-- 신고 검색 리스트 -->
+	<select id="selectSearchReportList" resultMap="reportResultSet">
+		SELECT R_RECORD_ID, R_LEVEL, R_TARGET, R_DATE, REASON, RESULT, REF_ID, R_CONTENT
+		FROM (SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE,
+		             RH.REASON, RH.RESULT, RH.REF_ID, B.TEXT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN BOARD B ON(RH.REF_ID=B.BID)
+		      WHERE R_LEVEL = 0
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 0
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		      RH.RESULT, RH.REF_ID, R.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+		      WHERE R_LEVEL = 1
+		      AND REF_ID IN (SELECT REF_ID
+		                     FROM REPORT_HISTORY
+		                     WHERE R_LEVEL = 1
+		                     GROUP BY REF_ID
+		                     HAVING COUNT(*) <![CDATA[>]]>= 5)
+		      UNION ALL
+		      SELECT RH.R_RECORD_ID, RH.R_LEVEL, RH.R_TARGET, RH.R_DATE, RH.REASON,
+		             RH.RESULT, RH.REF_ID, M.CONTENT AS R_CONTENT
+		      FROM REPORT_HISTORY RH
+		      JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+		      WHERE R_LEVEL = 2)
+		      WHERE 1=1
+		<choose>
+			<when test="rRecordId != -99">
+				AND R_RECORD_ID = #{rRecordId}
+			</when>
+			<when test="rTarget != -99">
+				AND R_TARGET = #{rTarget}
+			</when>
+			<otherwise>
+				AND RESULT IS NULL
+			</otherwise>
+		</choose>
+		ORDER BY R_RECORD_ID DESC
+	</select>
+	
+	<!-- 신고 내용 상세보기 -->
+	<!-- 게시판인 경우 -->
+	<select id="selectBoardReportOne" parameterType="_int" resultMap="reportResultSet">
+	    SELECT RH.R_RECORD_ID, RH.R_TARGET, RH.M_ID, RH.R_DATE, RH.REASON, RH.RESULT, B.TEXT AS R_CONTENT
+        FROM REPORT_HISTORY RH
+        JOIN BOARD B ON(RH.REF_ID=B.BID)
+        WHERE R_LEVEL = 0
+        AND REF_ID = #{refId}
+	</select>
+	<!-- 댓글인 경우 -->
+	<select id="selectReplyReportOne" parameterType="_int" resultMap="reportResultSet">
+	    SELECT RH.R_RECORD_ID, RH.R_TARGET, RH.M_ID, RH.R_DATE, RH.REASON, RH.RESULT, R.CONTENT AS R_CONTENT
+        FROM REPORT_HISTORY RH
+        JOIN REPLY R ON(RH.REF_ID=R.REPLY_ID)
+        WHERE R_LEVEL = 1
+        AND REF_ID = #{refId}
+	</select>
+	<!-- 메세지인 경우 -->
+	<select id="selectMessageReportOne" parameterType="_int" resultMap="reportResultSet">
+	     SELECT RH.R_RECORD_ID, RH.R_TARGET, RH.M_ID, RH.R_DATE, RH.REASON, RH.RESULT, M.CONTENT AS R_CONTENT
+         FROM REPORT_HISTORY RH
+         JOIN MESSAGE M ON(RH.REF_ID=M.MSG_ID)
+         WHERE R_LEVEL = 2
+         AND REF_ID = #{refId}
+	</select>
+	
+	<!-- 신고글 결과 업데이트 -->
+	<update id="updateReportResult">
+	    UPDATE REPORT_HISTORY
+	    SET RESULT = #{result}
+	    WHERE R_LEVEL = #{rLevel}
+        AND REF_ID = #{refId}
+	</update>
+</mapper>

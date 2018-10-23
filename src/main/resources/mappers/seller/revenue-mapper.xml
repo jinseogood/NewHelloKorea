@@ -1,0 +1,178 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Revenue">
+	<resultMap type="Revenue" id="revenueResultSet">
+		<id property="dhId" column="DH_ID"/>
+		<result property="cId" column="C_ID"/>
+		<result property="cName" column="C_NAME"/>
+		<result property="rCount" column="RCOUNT"/>
+		<result property="rDate" column="D_DATE"/>
+		<result property="price" column="PRICE"/>
+	</resultMap>
+	
+	<!-- 수익 전체 조회 리스트 카운트 -->
+	<select id="getRevenueListCount" resultType="_int" parameterType="_int">
+		SELECT COUNT(*)
+		FROM ( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+        	   FROM COMPANY C
+        	   JOIN MEMBER M ON(C.M_ID=M.M_ID)
+        	   JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+               		  FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
+                      		 FROM PAY_DETAIL PD
+                      		 JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                      		 JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                      		 JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                      		 JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                      		 JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                      		 WHERE C.M_ID = #{mId}
+                      		 AND TO_CHAR(RE.R_EDATE,'YYYYMM') <![CDATA[<]]>= TO_CHAR(SYSDATE,'YYYYMM')
+                      		 AND PA_ID NOT IN ( SELECT PA_ID
+                                         		FROM PAY_DETAIL
+                                         		WHERE PD_TYPE = 'R'))                    
+               		  GROUP BY C_ID, R_EDATE) USING(C_ID) )
+	</select>
+	
+	<!-- 수익 전체 조회 리스트 -->
+	<select id="selectRevenueList" resultMap="revenueResultSet" parameterType="_int">
+		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+        FROM COMPANY C
+        JOIN MEMBER M ON(C.M_ID=M.M_ID)
+        JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+               FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
+                      FROM PAY_DETAIL PD
+                      JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                      JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                      JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                      JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                      JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                      WHERE C.M_ID = #{mId}
+                      AND TO_CHAR(RE.R_EDATE,'YYYYMM') <![CDATA[<]]>= TO_CHAR(SYSDATE,'YYYYMM')
+                      AND PA_ID NOT IN ( SELECT PA_ID
+                                         FROM PAY_DETAIL
+                                         WHERE PD_TYPE = 'R'))                    
+               GROUP BY C_ID, R_EDATE) USING(C_ID)
+        ORDER BY D_DATE
+	</select>
+	
+	<!-- 수익 기간 검색 조회 리스트 카운트 -->
+	<select id="getSearchDateRevenueListCount" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+         	  FROM COMPANY C
+         	  JOIN MEMBER M ON(C.M_ID=M.M_ID)
+         	  JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+                	 FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
+                       	    FROM PAY_DETAIL PD
+                       		JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                       		JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                       		JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                       		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                       		JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                       		WHERE C.M_ID = ${list.get(0)}
+                       		AND TO_CHAR(RE.R_EDATE,'YYYYMM') BETWEEN TO_CHAR(TO_DATE('${list.get(1)}', 'YYYY-MM-DD'), 'YYYYMM') AND TO_CHAR(TO_DATE('${list.get(2)}', 'YYYY-MM-DD'), 'YYYYMM')
+                       		AND PA_ID NOT IN ( SELECT PA_ID
+                                          	   FROM PAY_DETAIL
+                                          	   WHERE PD_TYPE = 'R'))                    
+              GROUP BY C_ID, R_EDATE) USING(C_ID))
+	</select>
+	
+	<!-- 수익 기간 검색 조회 리스트 -->
+	<select id="selectSearchDateRevenueList" resultMap="revenueResultSet" parameterType="arraylist">
+		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+        FROM COMPANY C
+        JOIN MEMBER M ON(C.M_ID=M.M_ID)
+        JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+           	   FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
+               	      FROM PAY_DETAIL PD
+                      JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                      JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                      JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                      JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                      JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                      WHERE C.M_ID = ${list.get(0)}
+                      AND TO_CHAR(RE.R_EDATE,'YYYYMM') BETWEEN TO_CHAR(TO_DATE('${list.get(1)}', 'YYYY-MM-DD'), 'YYYYMM') AND TO_CHAR(TO_DATE('${list.get(2)}', 'YYYY-MM-DD'), 'YYYYMM')
+                      AND PA_ID NOT IN ( SELECT PA_ID
+                                         FROM PAY_DETAIL
+                                         WHERE PD_TYPE = 'R'))                    
+			   GROUP BY C_ID, R_EDATE) USING(C_ID)
+		ORDER BY C_ID
+	</select>
+	
+	<!-- 수익 검색 조회 리스트 카운트 -->
+	<select id="getSearchWordRevenueListCount" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+         	  FROM COMPANY C
+         	  JOIN MEMBER M ON(C.M_ID=M.M_ID)
+         	  JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+                	 FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
+                       	    FROM PAY_DETAIL PD
+                       		JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                       		JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                       		JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                       		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                       		JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                       		WHERE C.M_ID = ${list.get(0)}
+                       		<choose>
+								<when test="list.get(1).cName != null">
+									AND C_NAME LIKE '%' || '${list.get(1).cName}' || '%'
+								</when>
+								<when test="list.get(1).status.equals('A')">
+									AND C.C_ID IN (SELECT C_ID FROM DEPOSIT_HISTORY JOIN COMPANY USING(C_ID) WHERE M_ID = ${list.get(0)} AND TO_CHAR(D_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM'))
+								</when>
+								<otherwise>
+									AND C.C_ID NOT IN (SELECT C_ID FROM DEPOSIT_HISTORY JOIN COMPANY USING(C_ID) WHERE M_ID = ${list.get(0)} AND TO_CHAR(D_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM'))
+								</otherwise>
+							</choose>
+                       		AND TO_CHAR(RE.R_EDATE,'YYYYMM') <![CDATA[<]]>= TO_CHAR(SYSDATE,'YYYYMM')
+                       		AND PA_ID NOT IN ( SELECT PA_ID
+                                          	   FROM PAY_DETAIL
+                                          	   WHERE PD_TYPE = 'R'))                    
+              GROUP BY C_ID, R_EDATE) USING(C_ID))
+	</select>
+	
+	<!-- 수익 검색 조회 리스트 -->
+	<select id="selectSearchWordRevenueList" resultMap="revenueResultSet" parameterType="arraylist">
+		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		FROM COMPANY C
+		JOIN MEMBER M ON(C.M_ID=M.M_ID)
+		JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+			   FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
+					  FROM PAY_DETAIL PD
+					  JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+					  JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+					  JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+					  JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+					  JOIN MEMBER M ON(C.M_ID=M.M_ID)
+					  WHERE C.M_ID = ${list.get(0)}
+                      <choose>
+					  	<when test="list.get(1).cName != null">
+							AND C_NAME LIKE '%' || '${list.get(1).cName}' || '%'
+						</when>
+						<when test='list.get(1).status.equals("A")'>
+							AND C.C_ID IN (SELECT C_ID FROM DEPOSIT_HISTORY JOIN COMPANY USING(C_ID) WHERE M_ID = ${list.get(0)} AND TO_CHAR(D_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM'))
+						</when>
+						<otherwise>
+							AND C.C_ID NOT IN (SELECT C_ID FROM DEPOSIT_HISTORY JOIN COMPANY USING(C_ID) WHERE M_ID = ${list.get(0)} AND TO_CHAR(D_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM'))
+						</otherwise>
+					  </choose>
+					  AND TO_CHAR(RE.R_EDATE,'YYYYMM') <![CDATA[<]]>= TO_CHAR(SYSDATE,'YYYYMM')
+					  AND PA_ID NOT IN ( SELECT PA_ID
+										 FROM PAY_DETAIL
+										 WHERE PD_TYPE = 'R'))                    
+			  GROUP BY C_ID, R_EDATE) USING(C_ID)
+		ORDER BY C_ID
+	</select>
+	
+	<!-- 수익 상태 확인 -->
+	<select id="selectRSList" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM DEPOSIT_HISTORY
+		WHERE C_ID = ${list.get(0)}
+		AND TO_CHAR(D_DATE, 'YYYY-MM') = TO_CHAR(TO_DATE('${list.get(1)}', 'YYYY-MM-DD'), 'YYYY-MM')
+	</select>
+	
+</mapper>

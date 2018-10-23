@@ -1,0 +1,163 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Company2">
+   <resultMap type="Company2" id="company2ResultSet">
+      <id property="cid" column="C_ID"/>
+      <result property="cAddress" column="C_ADDRESS"/>
+      <result property="contentid" column="C_ORIGINID"/>
+      <result property="cName" column="C_NAME"/>
+      <result property="cPhone" column="C_PHONE"/>
+      <result property="mid" column="M_ID"/>
+      <result property="grade" column="GRADE"/>
+      <result property="minPrice" column="MINPRICE"/>
+      <result property="reviewCount" column="REVIEWCOUNT"/>
+   </resultMap>
+   
+   <!-- 호텔 조회 -->
+   <select id="selectList" resultMap="company2ResultSet">
+   		SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, NVL(AVG(GRADE),0) as GRADE, MIN(R_PRICE) as MINPRICE
+   		FROM COMPANY C
+   		LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   		JOIN ROOM R ON (C.C_ID = R.C_ID)
+   		WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   		<if test="sigunguName != null">
+   			AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   		</if>
+   		GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   </select>
+   
+   <!-- 이름순 정렬 -->
+   <select id="selectListOrderName" resultMap="company2ResultSet">
+   	SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, NVL(AVG(GRADE),0) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	<if test="sigunguName != null">
+   		AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	</if>
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY C_NAME
+   </select>
+   
+   <!-- 평점 높은순으로 정렬 -->
+   <select id="selectListOrderByGrade" resultMap="company2ResultSet">
+   	SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, NVL(AVG(GRADE),0) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY GRADE DESC
+   </select>
+   
+   <!-- 가격낮은순 -->
+   <select id="selectListOrderMoney1" resultMap="company2ResultSet">
+   	SELECT DISTINCT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, NVL(AVG(GRADE), 0) AS GRADE, MIN(R_PRICE) AS MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	AND C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY MINPRICE, C_NAME 
+   </select>
+   
+   <!-- 평점높은순 -->
+    <select id="selectListOrderMoney2" resultMap="company2ResultSet">
+   	SELECT DISTINCT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, NVL(AVG(GRADE), 0) AS GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	AND C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY GRADE DESC
+   </select>
+   
+   <!-- 가격대 3번 정렬 -->
+   <select id="selectListOrderMoney3" resultMap="company2ResultSet">
+   	SELECT DISTINCT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, AVG(GRADE) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE R_PRICE > 100000
+   	AND C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY C_NAME
+   </select>
+   
+   <!-- 평점 2점 이상 정렬 -->
+   <select id="selectListOrderByTwoAvg" resultMap="company2ResultSet">
+   	SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, AVG(GRADE) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	AND GRADE >= 2
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY GRADE DESC 
+   </select>
+   
+   <!-- 평점 3점 이상 정렬 -->
+   <select id="selectListOrderByThreeAvg" resultMap="company2ResultSet">
+   	SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, AVG(GRADE) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	AND GRADE >= 3
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY GRADE DESC 
+   </select>
+   
+   <!-- 평점 4점 이상 정렬 -->
+   <select id="selectListOrderByFourAvg" resultMap="company2ResultSet">
+   	SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, AVG(GRADE) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	AND GRADE >= 4
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY GRADE DESC 
+   </select>
+   
+   <!-- 평점 4점 이상 정렬 -->
+   <select id="selectListOrderByFiveAvg" resultMap="company2ResultSet">
+   	SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, AVG(GRADE) as GRADE, MIN(R_PRICE) as MINPRICE
+   	FROM COMPANY C
+   	LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   	JOIN ROOM R ON (C.C_ID = R.C_ID)
+   	WHERE C_ADDRESS LIKE '%' || #{areaName} || '%'
+   	AND C_ADDRESS LIKE '%' || #{sigunguName} || '%'
+   	AND GRADE >= 4.5
+   	GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   	ORDER BY GRADE DESC 
+   </select>
+   
+   <!-- 메인용, 상위평점 3개뽑기 -->
+   <select id="selectListCompanyTop3" resultMap="company2ResultSet">
+   	SELECT C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, M_ID, GRADE, REVIEWCOUNT
+   	FROM (SELECT C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID, NVL(AVG(GRADE), 0) AS GRADE, NVL(COUNT(ORIGIN_ID), 0) AS REVIEWCOUNT
+   		  FROM COMPANY C
+   		  LEFT JOIN BOARD B ON (C.C_ORIGINID = B.ORIGIN_ID)
+   		  GROUP BY C.C_ID, C_ADDRESS, C_ORIGINID, C_NAME, C_PHONE, C.M_ID
+   		  ORDER BY GRADE DESC)
+   	WHERE ROWNUM <![CDATA[<]]> 4
+   </select>
+   
+   
+   
+   
+   
+	
+</mapper>

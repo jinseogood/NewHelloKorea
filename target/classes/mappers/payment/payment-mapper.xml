@@ -1,0 +1,38 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Payment">
+	<resultMap type="Payment" id="paymentResultSet">
+		<id property="paId" column="PA_ID"/>
+		<result property="mId" column="M_ID"/>
+		<result property="paName" column="PA_NAME"/>
+		<result property="paPhone" column="PA_PHONE"/>
+		<result property="paEmail" column="PA_EMAIL"/>
+	</resultMap>
+   
+	<!-- 결제 정보 등록 -->
+	<insert id="insertPayment" parameterType="Payment">
+		INSERT INTO PAYMENT (PA_ID, M_ID, PA_NAME, PA_PHONE, PA_EMAIL)
+		VALUES (SEQ_PA_ID.NEXTVAL, #{mId}, #{paName}, #{paPhone}, #{paEmail})
+	</insert>
+	
+	<!-- 결제 완료 페이지에 보여 줄 결제 정보 조회 -->
+	<select id="selectPayInfo" resultMap="paymentResultSet" parameterType="_int">
+		SELECT PA_ID, M_ID, PA_NAME, PA_PHONE, PA_EMAIL
+		FROM PAYMENT
+		WHERE PA_ID = (SELECT MAX(PA_ID)
+                       FROM PAYMENT
+                       WHERE M_ID = #{mId}
+                       GROUP BY M_ID)
+	</select>
+	
+	<!-- 회원 포인트 조회 -->
+	<select id="selectUserPoint" resultType="_int" parameterType="_int">
+		SELECT DISTINCT NVL((SELECT SUM(AMOUNT) FROM POINT WHERE M_ID = #{mId} AND P_TYPE LIKE 'A'), 0) - NVL((SELECT SUM(AMOUNT) FROM POINT WHERE M_ID = #{mId} AND P_TYPE LIKE 'U'), 0)
+		FROM POINT
+		GROUP BY M_ID
+	</select>
+   
+</mapper>

@@ -1,0 +1,98 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Product">
+	<resultMap type="Product" id="productResultSet">
+		<id property="cId" column="C_ID"/>
+		<result property="companyName" column="C_NAME"/>
+		<result property="companyPhone" column="C_PHONE"/>
+		<result property="companyAddress" column="C_ADDRESS"/>
+		<result property="mId" column="M_ID"/>
+		<result property="crId" column="CR_ID"/>
+		<result property="term" column="CR_TERM"/>
+		<result property="status" column="CR_STATUS"/>
+		<result property="crDate" column="CR_DATE"/>
+		<result property="apDate" column="AP_DATE"/>
+		<result property="crEDate" column="CR_EDATE"/>
+	</resultMap>
+   
+	<!-- 상품 리스트 카운트 -->
+	<select id="getProductListCount" resultType="_int" parameterType="_int">
+		SELECT COUNT(*)
+		FROM COMPANY
+		JOIN COM_REGIST USING(C_ID)
+		WHERE M_ID = #{mId}
+	</select>
+	
+	<!-- 상품 전체 조회 -->
+	<select id="selectProductList" resultMap="productResultSet" parameterType="_int">
+		SELECT C_ID, C_NAME, C_ADDRESS, C_PHONE, CR_ID, CR_TERM, CR_STATUS, CR_DATE, AP_DATE, CR_EDATE
+		FROM COMPANY
+		JOIN COM_REGIST USING(C_ID)
+		WHERE M_ID = #{mId}
+		ORDER BY CR_DATE DESC, C_ID DESC
+	</select>
+	
+	<!-- 등록기간 검색 리스트 카운트 -->
+	<select id="getSearchDateProductListCount" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM COMPANY
+		JOIN COM_REGIST USING(C_ID)
+		WHERE M_ID = ${list.get(0)}
+		AND TO_CHAR(AP_DATE, 'YYYY-MM-DD') <![CDATA[>]]>= '${list.get(1)}'
+		AND TO_CHAR(CR_EDATE, 'YYYY-MM-DD') <![CDATA[<]]>= '${list.get(2)}'
+	</select>
+	
+	<!-- 등록기간 검색 상품 조회 -->
+	<select id="selectSearchDateProductList" resultMap="productResultSet" parameterType="arraylist">
+		SELECT C_ID, C_NAME, C_ADDRESS, C_PHONE, CR_ID, CR_TERM, CR_STATUS, CR_DATE, AP_DATE, CR_EDATE
+		FROM COMPANY
+		JOIN COM_REGIST USING(C_ID)
+		WHERE M_ID = ${list.get(0)}
+		AND TO_CHAR(AP_DATE, 'YYYY-MM-DD') <![CDATA[>]]>= '${list.get(1)}'
+		AND TO_CHAR(CR_EDATE, 'YYYY-MM-DD') <![CDATA[<]]>= '${list.get(2)}'
+		ORDER BY CR_DATE DESC, C_ID DESC
+	</select>
+	
+	<!-- 검색 상품 리스트 카운트 -->
+	<select id="getSearchWordProductListCount" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM COMPANY
+		JOIN COM_REGIST USING(C_ID)
+		WHERE M_ID = ${list.get(0)}
+		<choose>
+			<when test="list.get(1).companyName != null">
+				AND C_NAME LIKE '%' || '${list.get(1).companyName}' || '%'
+			</when>
+			<when test="list.get(1).companyAddress != null">
+				AND C_ADDRESS LIKE '%' || '${list.get(1).companyAddress}' || '%'
+			</when>
+			<otherwise>
+				AND CR_STATUS = ${list.get(1).status}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 검색 상품 조회 -->
+	<select id="selectSearchWordProductList" resultMap="productResultSet" parameterType="arraylist">
+		SELECT C_ID, C_NAME, C_ADDRESS, C_PHONE, CR_ID, CR_TERM, CR_STATUS, CR_DATE, AP_DATE, CR_EDATE
+		FROM COMPANY
+		JOIN COM_REGIST USING(C_ID)
+		WHERE M_ID = ${list.get(0)}
+		<choose>
+			<when test="list.get(1).companyName != null">
+				AND C_NAME LIKE '%' || '${list.get(1).companyName}' || '%'
+			</when>
+			<when test="list.get(1).companyAddress != null">
+				AND C_ADDRESS LIKE '%' || '${list.get(1).companyAddress}' || '%'
+			</when>
+			<otherwise>
+				AND CR_STATUS = ${list.get(1).status}
+			</otherwise>
+		</choose>
+		ORDER BY CR_DATE DESC, C_ID DESC
+	</select>
+	
+</mapper>

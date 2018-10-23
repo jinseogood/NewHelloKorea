@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Attachment">
+     <resultMap type="Attachment" id="profileATResultSet">
+          <id property="fId" column="FID"/>
+          <result property="filePath" column="FILE_PATH"/>
+          <result property="originName" column="ORIGIN_NAME" />
+          <result property="changeName" column="CHANGE_NAME"/>
+          <result property="uploadDate" column="UPLOAD_DATE"/>
+          <result property="aLevel" column="A_LEVEL"/>
+          <result property="refId" column="REF_ID"/>
+          <result property="status" column="STATUS"/>
+     </resultMap>
+    
+    <insert id="uploadprofile" parameterType="Attachment">
+    	INSERT INTO ATTACHMENT (FID,FILE_PATH,ORIGIN_NAME,CHANGE_NAME,STATUS,A_LEVEL,REF_ID,UPLOAD_DATE)
+    	VALUES(SEQ_FID.NEXTVAL,#{filePath},#{originName},#{changeName},'Y',2,#{refId},SYSDATE)
+    </insert>
+  <!--   
+    <select id="photoCheck" resultType="_int" parameterType="_int">
+	    	SELECT *
+	    	FROM MEMBER
+	    	LEFT JOIN ATTACHMNET ON(M_ID = REF_ID)
+	    	WHERE M_ID=#{mId}
+    </select> -->
+    <select id="selectMemberProfile" resultMap="profileATResultSet" parameterType="_int">
+    		SELECT A.FID,A.ORIGIN_NAME,A.FILE_PATH,A.UPLOAD_DATE,A.CHANGE_NAME,A.STATUS,A.A_LEVEL,A.REF_ID
+	    	FROM MEMBER M
+	    	LEFT JOIN ATTACHMENT A ON(M.M_ID = A.REF_ID)
+	    	WHERE M_ID=#{mId}
+	    	AND A_LEVEL = 2
+	    	AND ROWNUM = 1
+            ORDER BY FID DESC
+    </select>
+</mapper>

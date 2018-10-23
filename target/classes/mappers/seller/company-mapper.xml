@@ -1,0 +1,137 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Company">
+	<resultMap type="Company" id="companyResultSet">
+		<id property="cId" column="C_ID"/>
+		<result property="contentId" column="C_ORIGINID"/>
+		<result property="sellerType" column="C_TYPE"/>
+		<result property="companyNum" column="CP_RNUM"/>
+		<result property="personalNum" column="C_RNUM"/>
+		<result property="companyName" column="C_NAME"/>
+		<result property="companyPhone" column="C_PHONE"/>
+		<result property="companyAddress" column="C_ADDRESS"/>
+		<result property="mId" column="M_ID"/>
+	</resultMap>
+	
+	<resultMap type="CompanyGoodStat" id="companygoodstatResultSet">
+		<id property="cName" column="C_NAME"/>
+		<result property="good" column="GOOD"/>
+	</resultMap>
+	
+	<resultMap type="CompanySaleStat" id="companysalestatResultSet">
+		<id property="month" column="MONTH"/>
+		<result property="cName" column="C_NAME"/>
+		<result property="price" column="PRICE"/>
+	</resultMap>
+	
+	<resultMap type="CompanyOKResult" id="companyokResultSet">
+		<id property="cName" column="C_NAME"/>
+		<result property="apDate" column="AP_DATE"/>
+	</resultMap>
+	
+	<resultMap type="CompanyReviewResult" id="companyreviewResultSet">
+		<id property="cId" column="C_ID"/>
+		<result property="contentId" column="ORIGIN_ID"/>
+		<result property="cName" column="C_NAME"/>
+		<result property="count" column="COUNT"/>
+	</resultMap>
+	
+	<resultMap type="CompanyQnAResult" id="companyqnaResultSet">
+		<id property="cId" column="C_ID"/>
+		<result property="contentId" column="ORIGIN_ID"/>
+		<result property="cName" column="C_NAME"/>
+		<result property="count" column="COUNT"/>
+	</resultMap>
+	
+	<!-- 사업자등록번호 중복 확인 -->
+	<select id="duplicationCRNo" resultType="_int" parameterType="string">
+		SELECT COUNT(*)
+		FROM COMPANY
+		WHERE C_RNUM LIKE #{no}
+	</select>
+	
+	<!-- 법인등록번호 중복 확인 -->
+	<select id="duplicationCPRNo" resultType="_int" parameterType="string">
+		SELECT COUNT(*)
+		FROM COMPANY
+		WHERE CP_RNUM LIKE #{no}
+	</select>
+	
+	<!-- 업체명 중복 확인 -->
+	<select id="duplicationTitle" resultType="_int" parameterType="string">
+		SELECT COUNT(*)
+		FROM COMPANY
+		WHERE C_NAME LIKE #{title}
+	</select>
+   
+	<!-- 업체 등록 -->
+	<insert id="insertCompany" parameterType="Company">
+		INSERT INTO COMPANY (C_ID, C_ORIGINID, C_TYPE, CP_RNUM, C_RNUM, C_NAME, C_PHONE, C_ADDRESS, M_ID) 
+		VALUES (SEQ_C_ID.NEXTVAL, #{contentId}, #{sellerType}, #{companyNum}, #{personalNum}, #{companyName}, #{companyPhone}, #{companyAddress}, #{mId})
+	</insert>
+	
+	<!-- 업체 평점 통계 -->
+	<select id="selectGoodStats" resultMap="companygoodstatResultSet" parameterType="_int">
+		SELECT C_NAME, AVG(GRADE) GOOD
+		FROM BOARD
+		JOIN COMPANY ON(C_ORIGINID = ORIGIN_ID)
+		WHERE COMPANY.M_ID = #{mId}
+		GROUP BY C_NAME
+	</select>
+	
+	<!-- 월 수익 통계 -->
+	<select id="selectSaleStats" resultMap="companysalestatResultSet" parameterType="_int">
+		SELECT TO_CHAR(D_DATE, 'YYYY-MM') MONTH, SUM(D_AMOUNT) PRICE
+		FROM DEPOSIT_HISTORY
+		JOIN COMPANY USING(C_ID)
+		WHERE M_ID = #{mId}
+		AND TO_CHAR(D_DATE, 'YYYY-MM') <![CDATA[<]]>= TO_CHAR(SYSDATE, 'YYYY-MM')
+		GROUP BY D_DATE
+		ORDER BY D_DATE
+	</select>
+	
+	<!-- 월 수익 통계 -->
+	<select id="selectDetailSaleStats" resultMap="companysalestatResultSet" parameterType="_int">
+		SELECT TO_CHAR(D_DATE, 'YYYY-MM') MONTH, C_NAME, SUM(D_AMOUNT) PRICE
+		FROM DEPOSIT_HISTORY
+		JOIN COMPANY USING(C_ID)
+		WHERE M_ID = #{mId}
+		AND TO_CHAR(D_DATE, 'YYYY-MM') <![CDATA[<]]>= TO_CHAR(SYSDATE, 'YYYY-MM')
+		GROUP BY D_DATE, C_NAME
+		ORDER BY D_DATE
+	</select>
+	
+	<!-- 업체 승인 메시지 -->
+	<select id="selectOKList" resultMap="companyokResultSet" parameterType="_int">
+		SELECT C_NAME, TO_CHAR(AP_DATE, 'YYYY-MM-DD') AP_DATE
+		FROM COM_REGIST
+		JOIN COMPANY USING(C_ID)
+		WHERE M_ID = #{mId}
+		AND TO_CHAR(AP_DATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(SYSDATE, 'YYYY-MM-DD') AND TO_CHAR(SYSDATE+1, 'YYYY-MM-DD')
+	</select>
+	
+	<!-- 새 리뷰 메시지 -->
+	<select id="selectReviewList" resultMap="companyreviewResultSet" parameterType="_int">
+		SELECT C_ID, ORIGIN_ID, C_NAME, COUNT(BID) COUNT
+		FROM BOARD
+		JOIN COMPANY ON(C_ORIGINID = ORIGIN_ID)
+		WHERE COMPANY.M_ID = #{mId}
+		AND BOARD_TYPE = 1
+		AND TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(SYSDATE, 'YYYY-MM-DD') AND TO_CHAR(SYSDATE+1, 'YYYY-MM-DD')
+		GROUP BY C_ID, ORIGIN_ID, C_NAME
+	</select>
+	
+	<!-- 새 QnA 메시지 -->
+	<select id="selectQnAList" resultMap="companyqnaResultSet" parameterType="_int">
+		SELECT C_ID, ORIGIN_ID, C_NAME, COUNT(BID) COUNT
+		FROM BOARD
+		JOIN COMPANY ON(C_ORIGINID = ORIGIN_ID)
+		WHERE COMPANY.M_ID = #{mId}
+		AND BOARD_TYPE = 2
+		AND TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(SYSDATE, 'YYYY-MM-DD') AND TO_CHAR(SYSDATE+1, 'YYYY-MM-DD')
+		GROUP BY C_ID, ORIGIN_ID, C_NAME
+	</select>
+</mapper>

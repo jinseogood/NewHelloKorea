@@ -1,0 +1,33 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BoardAndReply">
+   <resultMap type="BoardAndReply" id="boardAndReplyResultSet">
+      <id property="bId" column="B_ID"/>
+      <result property="title" column="TITLE"/>
+      <result property="boardType" column="BOARD_TYPE"/>
+      <result property="likey" column="LIKEY"/>
+      <result property="mId" column="M_ID"/>
+      <result property="modifyDate" column="MODIFY_DATE"/>
+      <result property="rCount" column="R_COUNT"/>
+   </resultMap>
+  
+	<select id="selectboreList" resultMap="boardAndReplyResultSet" parameterType="_int">
+	SELECT BID,TITLE,BOARD_TYPE,MODIFY_DATE,LIKEY,R_COUNT
+	FROM BOARD
+	JOIN (SELECT B.BID,COUNT(*)
+	AS R_COUNT
+		FROM BOARD B
+		RIGHT JOIN REPLY R
+	ON (B.BID=R.BID)
+		WHERE B.M_ID=#{mId}
+		GROUP BY B.BID)
+	USING(BID)
+	</select>
+	
+	
+	
+  
+</mapper>

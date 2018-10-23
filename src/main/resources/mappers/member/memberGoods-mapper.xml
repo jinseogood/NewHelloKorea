@@ -1,0 +1,27 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberGoods">
+   <resultMap type="MemberGoods" id="memberGoodsResultSet">
+      <id property="lId" column="L_ID"/>
+      <result property="lType" column="L_TYPE"/>
+      <result property="originId" column="ORIGIN_ID"/>
+      <result property="endDate" column="END_DATE"/>
+      <result property="mId" column="M_ID"/>
+      <result property="cId" column="C_ID"/>
+      <result property="cName" column="C_NAME"/>
+      <result property="cPhone" column="C_PHONE"/>
+   </resultMap>
+  
+   	<select id="selectGoodList" resultMap="memberGoodsResultSet" parameterType="MemberGoods">
+   		SELECT ROWNUM AS L_ID, G.L_TYPE,G.ORIGIN_ID,G.M_ID,G.C_ID,C.C_NAME,C.C_PHONE
+		FROM GOOD G
+		JOIN COMPANY C ON (G.C_ID =C.C_ID)
+		WHERE G.M_ID = #{mId}
+        ORDER BY G.L_ID
+   </select>
+   
+  
+</mapper>

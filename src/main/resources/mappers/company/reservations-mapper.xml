@@ -1,0 +1,41 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reservations">
+   <resultMap type="Reservations" id="reservationsResultSet">
+      <id property="oid" column="O_ID"/>
+      <result property="start" column="R_SDATE"/>
+      <result property="end" column="R_EDATE"/>
+      <result property="people" column="PEOPLE"/>
+      <result property="roomcount" column="O_RCOUNT"/>
+      <result property="rid" column="R_ID"/>
+      <result property="paId" column="PA_ID"/>
+      <result property="roomName" column="R_TYPE"/>
+      <result property="cName" column="C_NAME"/>
+      <result property="cAddress" column="C_ADDRESS"/>
+      <result property="price" column="R_PRICE"/>
+      <result property="rType" column="R_TYPE"/>
+   </resultMap>
+   
+   <!-- 객실정보 insert. -->
+   <insert id="insertReservations">
+   	<selectKey keyProperty="oid" resultType="_int" order="AFTER">
+   		SELECT SEQ_O_ID.CURRVAL FROM DUAL
+   	</selectKey>
+   	INSERT INTO RESERVATION
+   	VALUES(SEQ_O_ID.NEXTVAL, #{start}, #{end}, #{people}, #{roomcount}, #{rid}, NULL)
+   </insert>
+   
+   <select id="selectListReservations" resultMap="reservationsResultSet">
+   	SELECT O_ID, R_SDATE, R_EDATE, PEOPLE, O_RCOUNT, R.R_ID, PA_ID, C_NAME, C_ADDRESS, R_PRICE, R_TYPE
+   	FROM RESERVATION R
+   	JOIN ROOM R2 ON (R.R_ID = R2.R_ID)
+   	JOIN COMPANY C ON(R2.C_ID = C.C_ID)
+   	WHERE O_ID = #{oid}
+   </select>
+   
+   
+	
+</mapper>

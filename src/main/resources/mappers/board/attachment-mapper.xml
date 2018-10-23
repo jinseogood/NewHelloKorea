@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Attachment">
+
+     <!-- 리뷰사진 -->
+     <resultMap type="Attachment" id="AttachmentResultSet">
+          <id property="fId" column="FID"/>
+          <result property="originName" column="ORIGIN_NAME" />
+          <result property="filePath" column="FILE_PATH"/>
+          <result property="uploadDate" column="UPLOAD_DATE"/>
+          <result property="changeName" column="CHANGE_NAME"/>
+          <result property="status" column="STATUS"/>
+          <result property="aLevel" column="A_LEVEL"/>
+          <result property="refId" column="REF_ID"/>
+     </resultMap>
+     
+     <!-- 리뷰사진 추가 -->
+     <insert id="insertReviewAttachment" parameterType="Attachment">
+          INSERT INTO ATTACHMENT VALUES(SEQ_FID.NEXTVAL, #{originName},
+                                       #{filePath}, SYSDATE, #{changeName}, #{status}, #{aLevel}, SEQ_BID.CURRVAL)
+     </insert>
+     <!-- 리뷰사진 수정추가 -->
+     <insert id="insertAttachment2" parameterType="Attachment">
+          INSERT INTO ATTACHMENT VALUES(SEQ_FID.NEXTVAL, #{originName},
+                                       #{filePath}, SYSDATE, #{changeName}, #{status}, #{aLevel}, #{refId})
+     </insert>
+     <!-- 리뷰사진 선택삭제 -->
+     <delete id="deleteSelectReviewAttachment" parameterType="java.lang.String">
+          DELETE FROM ATTACHMENT WHERE CHANGE_NAME = #{changeFileName}	
+     </delete>
+     
+     <!-- 리뷰사진 일괄삭제 -->
+     <delete id="deleteAllReviewAttachment" parameterType="_int">
+          DELETE FROM ATTACHMENT WHERE REF_ID = (SELECT MAX(BID) FROM BOARD WHERE M_ID = #{mId})	
+     </delete>
+     
+     <!-- 리뷰사진 수정시 일괄삭제 -->
+     <delete id="deleteAllUploadUpdate" parameterType="_int">
+          DELETE FROM ATTACHMENT WHERE REF_ID = #{bid}	
+     </delete>
+     
+     <!-- 리뷰사진 검색 검색 -->
+     <select id="selectAttachment" parameterType="_int" resultMap="AttachmentResultSet">
+         SELECT *
+         FROM ATTACHMENT
+         WHERE REF_ID = (SELECT MAX(BID) FROM BOARD WHERE M_ID = #{mId})
+     </select>
+
+     <select id="selectAttachDetail" parameterType="_int" resultMap="AttachmentResultSet">
+     	 SELECT FID, ORIGIN_NAME, FILE_PATH, UPLOAD_DATE, CHANGE_NAME, STATUS, A_LEVEL, REF_ID
+     	 FROM ATTACHMENT
+     	 WHERE REF_ID = #{bid}
+     	 AND A_LEVEL = 0
+     </select>
+</mapper>

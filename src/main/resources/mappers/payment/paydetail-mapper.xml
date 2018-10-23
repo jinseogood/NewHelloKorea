@@ -1,0 +1,35 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PayDetail">
+	<resultMap type="PayDetail" id="paydetailResultSet">
+		<id property="pdId" column="PD_ID"/>
+		<result property="pdDate" column="PD_DATE"/>
+		<result property="pdType" column="PD_TYPE"/>
+		<result property="price" column="PRICE"/>
+		<result property="pdMethod" column="PD_METHOD"/>
+		<result property="paId" column="PA_ID"/>
+	</resultMap>
+	
+	<!-- 결제 상세 정보 등록 -->
+	<insert id="insertPayDetail" parameterType="PayDetail">
+		INSERT INTO PAY_DETAIL(PD_ID, PD_DATE, PD_TYPE, PRICE, PD_METHOD, PA_ID)
+		VALUES (SEQ_PD_ID.NEXTVAL, SYSDATE, #{pdType}, #{price}, #{pdMethod}, SEQ_PA_ID.CURRVAL)
+	</insert>
+	
+	<!-- 포인트 사용 이력 등록 -->
+	<insert id="insertPoint" parameterType="arraylist">
+		INSERT INTO POINT(P_ID, P_TYPE, P_DATE, AMOUNT, M_ID, PD_ID, REPLY_ID, PA_TYPE)
+		VALUES (SEQ_P_ID.NEXTVAL, 'U', SYSDATE, ${list.get(1)}, ${list.get(0)}, SEQ_PD_ID.CURRVAL, SEQ_O_ID.CURRVAL, '0')
+	</insert>
+	
+	<!-- 결제 완료 페이지에 보여 줄 결제 상세 정보 조회 -->
+	<select id="selectPayDetailInfo" resultMap="paydetailResultSet" parameterType="_int">
+		SELECT PD_ID, PD_DATE, PD_TYPE, PRICE, PD_METHOD, PA_ID
+		FROM PAY_DETAIL
+		WHERE PA_ID = #{paId}
+	</select>
+   
+</mapper>

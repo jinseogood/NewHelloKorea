@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Company">
+   
+     <!-- 승인 신청 리스트 결과 셋 -->
+     <resultMap type="Approval" id="approvalResultSet">
+          <id property="crId" column="CR_ID"/>
+          <result property="crDate" column="CR_DATE" />
+          <result property="crStatus" column="CR_STATUS"/>
+          <result property="cId" column="C_ID"/>
+          <result property="cName" column="C_NAME"/>
+          <result property="cPhone" column="C_PHONE"/>
+          <result property="crTerm" column="CR_TERM"/>
+          <result property="apDate" column="AP_DATE"/>
+     </resultMap>
+     
+     <!-- 회사 디테일 -->
+     <resultMap type="CompanyDetails" id="companyDetailsResultSet">
+          <id property="cId" column="C_ID"/>
+          <result property="crId" column="CR_ID"/>
+          <result property="cName" column="C_NAME"/>
+          <result property="cPhone" column="C_PHONE"/>
+          <result property="cAddress" column="C_ADDRESS"/>
+          <result property="crStatus" column="CR_STATUS"/>
+          <result property="crDate" column="CR_DATE"/>
+          <result property="apDate" column="AP_DATE"/>
+          <result property="crEDate" column="CR_EDATE"/>
+          <result property="crTerm" column="CR_TERM"/> 
+          <result property="rType" column="R_TYPE"/>
+          <result property="rCount" column="R_COUNT"/>
+          <result property="rPrice" column="R_PRICE"/>
+          <result property="rLimit" column="R_LIMIT"/>
+     </resultMap>
+     
+     <!-- 회사 첨부 파일 -->
+     <resultMap type="Attachment" id="companyFilesResultSet">
+          <id property="fId" column="FID"/>
+          <result property="filePath" column="FILE_PATH"/>
+          <result property="originName" column="ORIGIN_NAME" />
+          <result property="changeName" column="CHANGE_NAME"/>
+          <result property="uploadDate" column="UPLOAD_DATE"/>
+          <result property="aLevel" column="A_LEVEL"/>
+          <result property="refId" column="REF_ID"/>
+          <result property="status" column="STATUS"/>
+     </resultMap>
+     
+     
+     <!-- 승인 신청 리스트 카운트 -->
+     <select id="selectCompanyListCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+                FROM COM_REGIST CR
+                JOIN COMPANY C ON(CR.C_ID=C.C_ID))
+     </select>
+     <!-- 승인 신청 리스트 -->
+     <select id="selectCompanyList" resultMap="approvalResultSet">
+         SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+         FROM COM_REGIST CR
+         JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+         ORDER BY CR_ID DESC
+     </select>
+     
+     <!-- 등록일 검색 카운트 -->
+     <select id="selectSearchcrDateCompanyListCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+                FROM COM_REGIST CR
+                JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+                WHERE TO_CHAR(CR_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate})
+     </select>
+     <!-- 등록일 검색 -->
+     <select id="selectSearchcrDateCompanyList" resultMap="approvalResultSet">
+         SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+         FROM COM_REGIST CR
+         JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+         WHERE TO_CHAR(CR_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate}
+         ORDER BY CR_ID DESC
+     </select>
+     <!-- 승인일 검색 카운트 -->
+     <select id="selectSearchapDateCompanyListCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+                FROM COM_REGIST CR
+                JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+                WHERE TO_CHAR(AP_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate})
+     </select>
+     <!-- 승인일 검색 -->
+     <select id="selectSearchapDateCompanyList" resultMap="approvalResultSet">
+         SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+         FROM COM_REGIST CR
+         JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+         WHERE TO_CHAR(AP_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate}
+         ORDER BY CR_ID DESC
+     </select>
+     
+     <!-- 승인 검색 리스트 카운트 -->
+     <select id="selectSearchWordCompanyListCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+                FROM COM_REGIST CR
+                JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+                WHERE 1=1
+                <choose>
+                  <when test="crId != -99">
+                      AND CR_ID = #{crId}
+                  </when>
+                  <when test="cName != null">
+                      AND C_NAME LIKE '%' || #{cName} || '%'
+                  </when>
+                  <when test="cPhone != null">
+                      AND C_PHONE LIKE '%' || #{cPhone} || '%'
+                  </when>
+                  <otherwise>
+                      AND AP_DATE IS NULL
+                  </otherwise>
+                </choose>)
+     </select>
+     <!-- 승인 검색 리스트 -->
+     <select id="selectSearchWordCompanyList" resultMap="approvalResultSet">
+         SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+         FROM COM_REGIST CR
+         JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+         WHERE 1=1
+         <choose>
+             <when test="crId != -99">
+                 AND CR_ID = #{crId}
+             </when>
+             <when test="cName != null">
+                 AND C_NAME LIKE '%' || #{cName} || '%'
+             </when>
+             <when test="cPhone != null">
+                 AND C_PHONE LIKE '%' || #{cPhone} || '%'
+             </when>
+             <otherwise>
+                 AND AP_DATE IS NULL
+             </otherwise>
+         </choose>
+         ORDER BY CR_ID DESC
+     </select>
+     
+     <!-- 회사 상세 페이지 조회 -->
+     <select id="selectOneCompany" resultMap="companyDetailsResultSet" parameterType="_int">
+         SELECT C.C_ID, CR.CR_ID, C.C_NAME, C.C_PHONE, C.C_ADDRESS, CR.CR_STATUS, CR.CR_DATE, CR.AP_DATE,
+                CR.CR_TERM, CR.CR_EDATE, R.R_TYPE, R.R_COUNT, R.R_PRICE, R.R_LIMIT
+         FROM ROOM R
+         LEFT JOIN COM_REGIST CR ON (R.C_ID=CR.C_ID)
+         LEFT JOIN COMPANY C ON (CR.C_ID=C.C_ID)
+         WHERE CR_ID= #{crId}
+     </select>
+     
+     <!-- 회사 첨부 파일 -->
+     <select id="selectCompanyFiles" parameterType="_int" resultMap="companyFilesResultSet">
+         SELECT *
+         FROM ATTACHMENT
+         WHERE A_LEVEL = 1
+         AND REF_ID = #{refId}  
+     </select>
+     
+     <select id="selectFileInfo" parameterType="_int" resultType="hashmap">
+         SELECT CHANGE_NAME, ORIGIN_NAME
+         FROM ATTACHMENT
+         WHERE FID = #{fId}
+     </select>
+     
+     <!-- 회사 승인 -->
+     <update id="updateCompanyRegist">
+         UPDATE COM_REGIST
+         SET CR_STATUS = 'Y', AP_DATE = SYSDATE, CR_EDATE = ADD_MONTHS(SYSDATE,#{crTerm})
+         WHERE CR_ID = #{crId}
+     </update>
+     
+     <!-- 회사 해지 -->
+     <update id="updateCompanyStatus" parameterType="_int">
+         UPDATE COM_REGIST
+         SET CR_STATUS = 'T', AP_DATE = SYSDATE
+         WHERE CR_ID = #{crId}
+     </update>
+     
+     <!-- 메인 미승인 회사(이번달) 수 -->
+     <select id="selectUnapprovedCompanyCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT CR.CR_ID, CR.CR_DATE, CR.CR_STATUS, CR.C_ID, C.C_NAME, C.C_PHONE, CR.CR_TERM, CR.AP_DATE 
+                FROM COM_REGIST CR
+                JOIN COMPANY C ON(CR.C_ID=C.C_ID)
+                WHERE AP_DATE IS NULL
+                AND TO_CHAR(CR_DATE,'YYYY-MM') = TO_CHAR(SYSDATE,'YYYY-MM'))
+     </select>
+     
+     <!-- 계약 만료일 도래 알림-->
+     <select id="selectExpirationList" resultMap="companyDetailsResultSet">
+         SELECT C_NAME, AP_DATE, CR_TERM, CR_EDATE
+         FROM COM_REGIST
+         JOIN COMPANY USING(C_ID)
+         WHERE TO_CHAR(CR_EDATE,'YYYY-MM-DD') = TO_CHAR(SYSDATE,'YYYY-MM-DD')
+         AND CR_STATUS = 'Y'
+     </select>
+</mapper>

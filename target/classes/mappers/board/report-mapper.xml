@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rReport">
+     <!-- 신고 -->
+
+     <resultMap type="rReport" id="ReportResultSet">
+          <id property="r_record_id" column="R_RECORD_ID"/>
+          <result property="reason" column="REASON" />
+          <result property="r_date" column="R_DATE"/>
+          <result property="r_level" column="R_LEVEL"/>
+          <result property="m_id" column="M_ID"/>
+          <result property="r_target" column="R_TARGET"/>
+          <result property="ref_id" column="REF_ID"/>
+          <result property="result" column="RESULT"/>
+     </resultMap>
+     
+     <!-- 신고 셀렉트 -->
+     <select id="selectReport" parameterType="rReport" resultMap="ReportResultSet">
+     	  SELECT R_RECORD_ID, REASON, R_DATE, R_LEVEL, M_ID, R_TARGET, REF_ID, RESULT
+     	  FROM REPORT_HISTORY
+     	  WHERE REF_ID = #{ref_id}
+     	  AND R_LEVEL = #{r_level}
+     	  AND R_TARGET = #{r_target}
+     	  AND M_ID = #{m_id}
+     </select>
+     
+     <!-- 신고인서트 -->
+     <insert id="insertReport" parameterType="rReport">
+          INSERT INTO REPORT_HISTORY VALUES(SEQ_R_RECORD_ID.NEXTVAL, #{reason},
+                                       SYSDATE, #{r_level}, #{m_id}, #{r_target}, #{ref_id}, NULL)
+     </insert>
+     
+     <!-- 신고 업데이트 -->
+     <update id="updateReport" parameterType="rReport">
+     	  UPDATE REPORT_HISTORY 
+     	  SET REASON = REASON||', '||#{reason}, M_ID = M_ID||', '||#{m_id}
+     	  WHERE REF_ID = #{ref_id}
+     </update>
+
+  
+</mapper>

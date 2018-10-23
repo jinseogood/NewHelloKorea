@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Reply">
+     <!-- 리뷰 -->
+     <resultMap type="Reply" id="ReplyResultSet">
+          <id property="reply_id" column="REPLY_ID"/>
+          <result property="content" column="CONTENT" />
+          <result property="regist_date" column="REGIST_DATE"/>
+          <result property="modify_date" column="MODIFY_DATE"/>
+          <result property="regist_status" column="REGIST_STATUS"/>
+          <result property="help_point" column="HELP_POINT"/>
+          <result property="m_id" column="M_ID"/>
+          <result property="bid" column="BID"/>
+          <result property="nickname" column="NICKNAME"/>
+     </resultMap>
+     
+     <!-- A인서트 -->
+     <insert id="insertA" parameterType="Reply">
+          INSERT INTO REPLY VALUES(SEQ_REPLY_ID.NEXTVAL, #{content},
+                                       SYSDATE, SYSDATE, 1, 0, #{m_id}, #{bid})
+     </insert>
+     
+     <select id="selectQAnswer" resultMap = "ReplyResultSet">
+     	  SELECT R.REPLY_ID, R.CONTENT, R.REGIST_DATE, R.MODIFY_DATE, R.REGIST_STATUS, R.HELP_POINT, R.M_ID, R.BID,
+     	  (SELECT NICKNAME FROM MEMBER WHERE M_ID = R.M_ID) AS NICKNAME
+     	  FROM REPLY R
+     	  JOIN MEMBER M ON(M.M_ID = R.M_ID)
+     </select>
+     
+     <select id="selectRAnswer" resultMap = "ReplyResultSet" parameterType="_int">
+     	  SELECT R.REPLY_ID, R.CONTENT, R.REGIST_DATE, R.MODIFY_DATE, R.REGIST_STATUS, R.HELP_POINT, R.M_ID, R.BID,
+     	  (SELECT NICKNAME FROM MEMBER WHERE M_ID = R.M_ID) AS NICKNAME
+     	  FROM REPLY R
+     	  JOIN MEMBER M ON(M.M_ID = R.M_ID)
+     	  WHERE BID = #{bid}	
+     </select>
+     
+     <!-- 도움이 되었어요 카운트 -->
+     <update id = "updateThumbs" parameterType="_int">
+     	  UPDATE REPLY
+     	  SET HELP_POINT = (SELECT COUNT(*)
+     	 					FROM THUMBS_UP
+     	  					WHERE REF_ID = #{ref_id}
+     	  					AND STATUS = 'Y')
+     	  WHERE REPLY_ID = #{ref_id}
+     </update>
+     
+     <select id="selectReplyCount" parameterType="_int" resultType="_int">
+     	  SELECT COUNT(*)
+     	  FROM REPLY
+     	  WHERE BID = #{bid}
+     </select>
+     
+     <!-- 리뷰 업데이트(실질적 글작성) -->
+     <!-- <update id="updateReviewBoard" parameterType="_int">
+         UPDATE BOARD
+         SET TITLE = #{title}, TEXT = #{text}, REGIST_DATE = SYSDATE, GRADE = #{grade}, MODIFY_DATE = SYSDATE
+         WHERE bid = (SELECT MAX(BID) FROM BOARD WHERE M_ID = #{m_id})
+     </update> -->
+  
+</mapper>

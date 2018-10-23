@@ -1,0 +1,115 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+   <resultMap type="Member" id="memberResultSet">
+      <id property="mId" column="M_ID"/>
+      <result property="platformType" column="PLATFORM_TYPE"/>
+      <result property="mType" column="M_TYPE"/>
+      <result property="snsToken" column="SNS_TOKEN"/>
+      <result property="snsId" column="SNS_ID"/>
+      <result property="password" column="PASSWORD"/>
+      <result property="tempPassword" column="TEMP_PASSWORD"/>
+      <result property="registDate" column="REGIST_DATE"/>
+      <result property="status" column="STATUS"/>
+      <result property="email" column="EMAIL"/>
+      <result property="nickname" column="NICKNAME"/>
+      <result property="national" column="NATIONAL"/>
+      <result property="interest" column="INTEREST"/>
+      <result property="snsType" column="SNS_TYPE"/>
+      <result property="phone" column="PHONE"/>
+      <result property="bankNum" column="BANK_NUM"/>
+   </resultMap>
+   
+   <!-- 濡쒓렇???뺣낫 議고쉶??荑쇰━臾?-->
+   <select id="loginCheck" resultMap="memberResultSet" parameterType="Member">
+      SELECT *
+      FROM MEMBER
+      WHERE USER_ID = #{email}
+      AND USER_PWD = #{password}
+      
+   </select>
+   <!-- ?뚯썝媛?낆슜 硫붿냼??-->
+	<insert id="insertMember" parameterType="Member">
+		INSERT INTO MEMBER (M_ID,PLATFORM_TYPE,M_TYPE,EMAIL,PASSWORD,REGIST_DATE,STATUS) 
+		VALUES (SEQ_M_ID.NEXTVAL,'email','1',#{email},#{password},SYSDATE,'Y')
+	</insert>
+	
+	<insert id="insertSeller" parameterType="Member">
+		INSERT INTO MEMBER(M_ID,PLATFORM_TYPE,M_TYPE,REGIST_DATE,STATUS,EMAIL,PASSWORD)
+		VALUES (SEQ_M_ID.NEXTVAL,'email','2',SYSDATE,'Y',#{email},#{password})
+	</insert>
+	<!-- 페이스북 -->
+	<insert id="insertFacebook" parameterType="Member">
+		INSERT INTO MEMBER(M_ID,PLATFORM_TYPE,M_TYPE,REGIST_DATE,STATUS,EMAIL,SNS_ID)
+		VALUES (SEQ_M_ID.NEXTVAL,'facebook','1',SYSDATE,'Y',#{email},#{snsId})
+	</insert>
+	
+	<update id="updateAddUser">
+		UPDATE MEMBER
+		SET NICKNAME=#{nickname},
+			NATIONAL=#{national},
+			INTEREST=#{interest}
+		WHERE M_ID =#{mId}
+	</update>
+	
+	<select id="selectPwd" resultType="java.lang.String"
+		parameterType="java.lang.String">
+		SELECT PASSWORD FROM MEMBER 
+		WHERE EMAIL = #{email} AND STATUS = 'Y'
+	</select>
+	
+	<select id="selectLoginUser" resultMap="memberResultSet"
+		parameterType="Member">
+		SELECT * FROM MEMBER
+		WHERE EMAIL =#{email} AND STATUS ='Y'
+	</select>
+	
+	<!-- <select id="selectMemberSequence" resultMap="_int"> -->
+	<select id="selectMemberSequence" resultType="_int">
+      SELECT SEQ_M_ID.currval FROM DUAL
+	</select>
+	<select id="selectSellerSequence" resultType="_int">
+      SELECT SEQ_M_ID.currval FROM DUAL
+	</select>
+	<!--  -->
+	<select id="selectSnsCheck" resultMap="memberResultSet" parameterType="java.util.Map">
+		SELECT *
+		FROM MEMBER
+		WHERE PLATFORM_TYPE=#{platForm} AND
+        SNS_ID=#{snsId}
+	</select>
+	<update id="updateAddSeller">
+		UPDATE MEMBER
+		SET NICKNAME=#{nickname},
+			BANK_NUM=#{bankNum},
+			PHONE=#{phone}
+		WHERE M_ID =#{mId}
+	</update>
+	
+	<update id="editProfile">
+		UPDATE MEMBER
+		SET NICKNAME=#{nickname},
+			INTEREST=#{interest}
+		WHERE M_ID =#{mId}
+	</update>
+	
+	<!-- 닉네임  -->
+	<select id="nicknameCheck" parameterType="java.lang.String" resultType="_int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE NICKNAME LIKE #{nickname} AND STATUS ='Y'
+	</select>
+	<select id="emailCheck" parameterType="java.lang.String" resultType="_int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE EMAIL LIKE #{email} 
+	</select>
+	<!-- 구글 -->
+	<insert id="insertGoogole" parameterType="Member">
+	INSERT INTO MEMBER(M_ID,PLATFORM_TYPE,M_TYPE,REGIST_DATE,STATUS,EMAIL,SNS_ID)
+	VALUES (SEQ_M_ID.NEXTVAL,'google','1',SYSDATE,'Y',#{email},#{snsId})
+	</insert>
+</mapper>

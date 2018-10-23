@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Thumbs">
+     <!-- 좋아요, 도움이되었어요 -->
+
+     <resultMap type="Thumbs" id="ThumbResultSet">
+          <id property="t_id" column="T_ID"/>
+          <result property="m_id" column="M_ID" />
+          <result property="t_type" column="T_TYPE"/>
+          <result property="t_target" column="T_TARGET"/>
+          <result property="ref_id" column="REF_ID"/>
+          <result property="status" column="STATUS"/>
+     </resultMap>
+     
+     <!-- 도움 셀렉트 -->
+     <select id="selectThumbs" parameterType="Thumbs" resultMap="ThumbResultSet">
+     	  SELECT T_ID, M_ID, T_TYPE, T_TARGET, REF_ID, STATUS
+     	  FROM THUMBS_UP
+     	  WHERE M_ID = #{m_id}
+     	  AND REF_ID = #{ref_id}
+     	  AND T_TYPE = #{t_type}
+     </select>
+          
+     <select id="selectThumbsCount" parameterType="Thumbs" resultType="_int">
+     	  SELECT COUNT(*)
+     	  FROM THUMBS_UP
+     	  WHERE REF_ID = #{ref_id}
+     	  AND T_TYPE = #{t_type}
+     	  AND STATUS = 'Y'
+     </select>
+     
+     <!-- 도움 인서트 -->
+     <insert id="insertThumbs" parameterType="Thumbs">
+          INSERT INTO THUMBS_UP VALUES(SEQ_T_ID.NEXTVAL, #{m_id},
+                                       #{t_type}, #{t_target}, #{ref_id}, #{status})
+     </insert> 
+     
+
+     <update id="updateThumbs" parameterType="Thumbs">
+     	  UPDATE THUMBS_UP 
+     	  SET STATUS =  #{status}
+     	  WHERE M_ID = #{m_id}
+     	  AND REF_ID = #{ref_id}
+     	  AND T_TYPE = 1
+     </update>
+     
+     <update id="updateThumbsR" parameterType="Thumbs">
+     	  UPDATE THUMBS_UP 
+     	  SET STATUS =  #{status}
+     	  WHERE M_ID = #{m_id}
+     	  AND REF_ID = #{ref_id}
+     	  AND T_TYPE = 0
+     </update>
+
+  
+</mapper>

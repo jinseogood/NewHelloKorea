@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Point">
+
+     <!-- 리뷰 -->
+     <resultMap type="Point" id="PointResultSet">
+          <id property="p_id" column="P_ID"/>
+          <result property="p_type" column="P_TYPE" />
+          <result property="p_date" column="P_DATE"/>
+          <result property="amount" column="AMOUNT"/>
+          <result property="m_id" column="M_ID"/>
+          <result property="pd_id" column="PD_ID"/>
+          <result property="reply_id" column="REPLY_ID"/>
+          <result property="pa_type" column="PA_TYPE"/>
+          <result property="help_count" column="HELP_COUNT"/>
+     </resultMap>
+     
+     <insert id = "insertPoint" parameterType = "Board">
+     	INSERT INTO POINT VALUES(SEQ_P_ID.NEXTVAL, 'A', SYSDATE, 500, #{m_id}, 
+     							(SELECT MAX(PD.PD_ID) FROM PAYMENT P JOIN PAY_DETAIL PD ON(P.PA_ID = PD.PA_ID) WHERE P.M_ID = #{m_id}),
+     							SEQ_BID.CURRVAL, '1')
+     </insert>
+    
+     <select id = "selectPoint" parameterType = "Board" resultType="_int">
+     	SELECT COUNT(*)
+     	FROM POINT P
+     	JOIN BOARD B ON(B.BID = P.REPLY_ID)
+     	WHERE P.M_ID = #{m_id}
+     	AND PA_TYPE = '1'
+     	AND B.ORIGIN_ID = #{origin_id}
+     </select>
+     
+     <select id = "selectPointA" parameterType = "Thumbs" resultType="_int">
+     	SELECT COUNT(*)
+     	FROM POINT
+     	WHERE M_ID = #{t_target}
+     	AND REPLY_ID = #{ref_id}
+     	AND PA_TYPE = 2
+     </select>
+     
+     <insert id = "insertPointA" parameterType = "Thumbs">
+     	INSERT INTO POINT VALUES(SEQ_P_ID.NEXTVAL, 'A', SYSDATE, 500, #{t_target},
+     							0, #{ref_id}, '2')
+     </insert>
+</mapper>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Blacklist">
+         
+     <!-- 블랙리스트 결과 셋 -->
+     <resultMap type="Blacklist" id="blacklistResultSet">
+          <id property="bRecordId" column="B_RECORD_ID"/>
+          <result property="inDate" column="IN_DATE" />
+          <result property="mId" column="M_ID"/>
+          <result property="reason" column="REASON"/>
+          <result property="period" column="PERIOD"/>
+          <result property="outDate" column="OUT_DATE"/>
+     </resultMap>
+     
+     <!-- 블랙리스트 입력 -->
+     <insert id="insertBlacklist" parameterType="Blacklist">
+          INSERT INTO BLACKLIST VALUES(SEQ_B_RECORD_ID.NEXTVAL, SYSDATE,
+                                       #{mId}, #{reason}, #{period}, NULL)
+     </insert>
+     
+     <!-- 블랙리스트 멤버 상태 업데이트 -->
+     <update id="updateMemberStatus" parameterType="_int">
+         UPDATE MEMBER
+         SET STATUS = 'B'
+         WHERE M_ID = #{mId} 
+     </update>
+     
+     <!-- 블랙리스트 해당 글 업데이트 -->
+     <update id="updateBoardStatus" parameterType="_int">
+         UPDATE BOARD
+         SET STATUS = 'N'
+         WHERE BID = #{refId} 
+     </update>
+     
+     <!-- 블랙리스트 해당 댓글 업데이트 -->
+     <update id="updateReplyStatus" parameterType="_int">
+         UPDATE REPLY
+         SET REGIST_STATUS = 'N'
+         WHERE REPLY_ID = #{refId} 
+     </update>
+     
+     <!-- 블랙리스트 해당 메세지 업데이트 -->
+     <update id="updateMessageStatus" parameterType="_int">
+         UPDATE MESSAGE
+         SET STATUS = 'N'
+         WHERE MSG_ID = #{refId} 
+     </update>
+     
+     <!-- 블랙리스트 카운트-->
+     <select id="selectBlacklistCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT *
+                FROM BLACKLIST)
+     </select>
+     
+     <!-- 블랙리스트 -->
+     <select id="selectBlacklist" resultMap="blacklistResultSet">
+         SELECT *
+         FROM BLACKLIST
+         ORDER BY B_RECORD_ID DESC
+     </select>
+     
+     <!-- 블랙리스트 등록일 검색 카운트-->
+     <select id="selectSearchRDateBlacklistCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT *
+                FROM BLACKLIST
+                WHERE TO_CHAR(IN_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate})
+     </select>
+     
+     <!-- 블랙리스트 등록일 검색 -->
+     <select id="selectSearchRDateBlacklist" resultMap="blacklistResultSet">
+         SELECT *
+         FROM BLACKLIST
+         WHERE TO_CHAR(IN_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate}
+         ORDER BY B_RECORD_ID DESC
+     </select>
+     
+     <!-- 블랙리스트 해지일 검색 카운트 -->
+     <select id="selectSearchTDateBlacklistCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT *
+                FROM BLACKLIST
+                WHERE OUT_DATE BETWEEN TO_DATE(#{fromDate}) AND TO_DATE(#{toDate}))
+     </select>
+     <!-- 블랙리스트 해지일 검색 -->
+     <select id="selectSearchTDateBlacklist" resultMap="blacklistResultSet">
+         SELECT *
+         FROM BLACKLIST
+         WHERE OUT_DATE BETWEEN TO_DATE(#{fromDate}) AND TO_DATE(#{toDate})
+         ORDER BY B_RECORD_ID DESC
+     </select>
+     
+     <!-- 블랙리스트 미해지건 검색 카운트 -->
+     <select id="selectnoTBlacklistCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT *
+                FROM BLACKLIST
+                WHERE OUT_DATE IS NULL )
+     </select>
+     
+     <!-- 블랙리스트 미해지건 검색 -->
+     <select id="selectnoTBlacklist" resultMap="blacklistResultSet">
+         SELECT *
+         FROM BLACKLIST
+         WHERE OUT_DATE IS NULL
+         ORDER BY B_RECORD_ID DESC
+     </select>
+     <!-- 블랙리스트 검색 카운트 -->
+     <select id="selectSearchWordBlacklistCount" resultType="_int">
+          SELECT COUNT(*)
+          FROM ( SELECT *
+                 FROM BLACKLIST
+                 WHERE 1=1
+                 <choose>
+			        <when test="bRecordId != -99">
+				        AND B_RECORD_ID = #{bRecordId}
+			        </when>
+			        <when test="mId != null">
+				        AND M_ID = #{mId}
+			        </when>
+		         </choose> )
+     </select>
+     <!-- 블랙리스트 검색 리스트 -->
+     <select id="selectSearchWordBlacklist" resultMap="blacklistResultSet">
+         SELECT *
+         FROM BLACKLIST
+         WHERE 1=1
+         <choose>
+			<when test="bRecordId != -99">
+				AND B_RECORD_ID = #{bRecordId}
+			</when>
+			<when test="mId != null">
+				AND M_ID = #{mId}
+			</when>
+		</choose>
+         ORDER BY B_RECORD_ID DESC
+     </select>
+
+     
+</mapper>

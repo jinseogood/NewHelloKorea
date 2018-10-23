@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Deposit">
+   
+     <!-- 승인 신청 리스트 결과 셋 -->
+     <resultMap type="Deposit" id="depositResultSet">
+          <id property="cId" column="C_ID"/>
+          <result property="cName" column="C_NAME"/>
+          <result property="bankNum" column="BANK_NUM"/>
+          <result property="dAmount" column="D_AMOUNT"/>
+          <result property="dDate" column="D_DATE"/>
+     </resultMap>
+     
+     <!-- 입금 처리 리스트 카운트 -->
+     <select id="selectDepositListCount" resultType="_int">
+         SELECT COUNT(*)
+         FROM ( SELECT C_ID, C_NAME, BANK_NUM, ROUND(PRICE*0.85) AS D_AMOUNT, TO_CHAR(SYSDATE,'YYYY-MM') || '-05' AS D_DATE
+                FROM COMPANY C
+                JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE              
+                       FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, M.BANK_NUM
+                              FROM PAY_DETAIL PD
+                              JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                              JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                              JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                              JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                              JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                              WHERE TO_CHAR(RE.R_EDATE,'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMM')
+                              AND PA_ID NOT IN ( SELECT PA_ID
+                                                 FROM PAY_DETAIL
+                                                 WHERE PD_TYPE = 'R'))                    
+                              GROUP BY C_ID) USING(C_ID)
+                 WHERE C_ID NOT IN( SELECT C_ID
+                                    FROM DEPOSIT_HISTORY
+                                    WHERE TO_CHAR(D_DATE,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM')))
+     </select>
+     
+     <!-- 입금 처리 리스트 -->
+     <select id="selectDepositList" resultMap="depositResultSet">
+         SELECT C_ID, C_NAME, BANK_NUM, ROUND(PRICE*0.85) AS D_AMOUNT, TO_CHAR(SYSDATE,'YYYY-MM') || '-05' AS D_DATE
+         FROM COMPANY C
+         JOIN MEMBER M ON(C.M_ID=M.M_ID)
+         JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE              
+                FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, M.BANK_NUM
+                       FROM PAY_DETAIL PD
+                       JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                       JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                       JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                       JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                       JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                       WHERE TO_CHAR(RE.R_EDATE,'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMM')
+                       AND PA_ID NOT IN ( SELECT PA_ID
+                                          FROM PAY_DETAIL
+                                          WHERE PD_TYPE = 'R'))                    
+                GROUP BY C_ID) USING(C_ID)
+         WHERE C_ID NOT IN( SELECT C_ID
+                            FROM DEPOSIT_HISTORY
+                            WHERE TO_CHAR(D_DATE,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM'))
+         ORDER BY C_ID
+     </select>
+     
+     <!-- 입금 처리 검색 리스트 카운트 -->
+     <select id="selectSearchWordDepositListCount" resultType="_int">     
+         SELECT COUNT(*)
+         FROM ( SELECT C_ID, C_NAME, BANK_NUM, ROUND(PRICE*0.85) AS D_AMOUNT, TO_CHAR(SYSDATE,'YYYY-MM') || '-05' AS D_DATE
+                FROM COMPANY C
+                JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE              
+                       FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, M.BANK_NUM
+                              FROM PAY_DETAIL PD
+                              JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                              JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                              JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                              JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                              JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                              WHERE TO_CHAR(RE.R_EDATE,'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMM')
+                              AND PA_ID NOT IN ( SELECT PA_ID
+                                          FROM PAY_DETAIL
+                                          WHERE PD_TYPE = 'R'))                    
+                              GROUP BY C_ID) USING(C_ID)
+                WHERE C_ID NOT IN( SELECT C_ID
+                                   FROM DEPOSIT_HISTORY
+                                   WHERE TO_CHAR(D_DATE,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM'))              
+                <choose>
+                  <when test="cId != -99">
+                      AND C_ID = #{cId}
+                  </when>
+                  <when test="cName != null">
+                      AND C_NAME LIKE '%' || #{cName} || '%'
+                  </when>
+                </choose> )
+     </select>
+     <!-- 입금 처리 검색 리스트 -->
+     <select id="selectSearchWordDepositList" resultMap="depositResultSet">
+         SELECT C_ID, C_NAME, BANK_NUM, ROUND(PRICE*0.85) AS D_AMOUNT, TO_CHAR(SYSDATE,'YYYY-MM') || '-05' AS D_DATE
+         FROM COMPANY C
+         JOIN MEMBER M ON(C.M_ID=M.M_ID)
+         JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE              
+                FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, M.BANK_NUM
+                       FROM PAY_DETAIL PD
+                       JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                       JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                       JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                       JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                       JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                       WHERE TO_CHAR(RE.R_EDATE,'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMM')
+                       AND PA_ID NOT IN ( SELECT PA_ID
+                                          FROM PAY_DETAIL
+                                          WHERE PD_TYPE = 'R'))                  
+                GROUP BY C_ID) USING(C_ID)
+         WHERE C_ID NOT IN( SELECT C_ID
+                            FROM DEPOSIT_HISTORY
+                            WHERE TO_CHAR(D_DATE,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM'))       
+         <choose>
+             <when test="cId != -99">
+                 AND C_ID = #{cId}
+                 ORDER BY 1
+             </when>
+             <when test="cName != null">
+                 AND C_NAME LIKE '%' || #{cName} || '%'
+                 ORDER BY 1
+             </when>
+             <otherwise>
+                 ORDER BY 4 DESC
+             </otherwise>
+         </choose>
+      </select>
+      
+      <!-- 입금 처리 해주기 -->
+      <insert id="insertDepositHistory">
+          INSERT INTO DEPOSIT_HISTORY
+          VALUES(SEQ_DH_ID.NEXTVAL, #{cId}, #{dAmount}, SYSDATE)
+      </insert>
+      
+      <!-- 입금내역 리스트 카운트 -->
+      <select id="selectDepositHistoryListCount" resultType="_int">
+          SELECT COUNT(*)
+          FROM ( SELECT DH.DH_ID, DH.C_ID, C.C_NAME, M.BANK_NUM, DH.D_AMOUNT, DH.D_DATE
+                 FROM DEPOSIT_HISTORY DH
+                 JOIN COMPANY C ON(DH.C_ID = C.C_ID)
+                 JOIN MEMBER M ON(C.M_ID = M.M_ID))
+      </select>
+      
+      <!-- 입금내역 리스트 -->
+      <select id="selectDepositHistoryList" resultMap="depositResultSet">
+          SELECT DH.DH_ID, DH.C_ID, C.C_NAME, M.BANK_NUM, DH.D_AMOUNT, DH.D_DATE
+          FROM DEPOSIT_HISTORY DH
+          JOIN COMPANY C ON(DH.C_ID = C.C_ID)
+          JOIN MEMBER M ON(C.M_ID = M.M_ID)
+          ORDER BY DH_ID DESC
+      </select>
+      
+      <!-- 입금 내역 입금일 검색 카운트 -->
+      <select id="selectSearchDateDepositHistoryListCount" resultType="_int">
+          SELECT COUNT(*)
+          FROM ( SELECT DH.DH_ID, DH.C_ID, C.C_NAME, M.BANK_NUM, DH.D_AMOUNT, DH.D_DATE
+                 FROM DEPOSIT_HISTORY DH
+                 JOIN COMPANY C ON(DH.C_ID = C.C_ID)
+                 JOIN MEMBER M ON(C.M_ID = M.M_ID)
+                 WHERE TO_CHAR(D_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate})
+      </select>
+      <!-- 입금 내역 입금일 검색 -->
+      <select id="selectSearchDateDepositHistoryList" resultMap="depositResultSet">
+          SELECT DH.DH_ID, DH.C_ID, C.C_NAME, M.BANK_NUM, DH.D_AMOUNT, DH.D_DATE
+          FROM DEPOSIT_HISTORY DH
+          JOIN COMPANY C ON(DH.C_ID = C.C_ID)
+          JOIN MEMBER M ON(C.M_ID = M.M_ID)
+          WHERE TO_CHAR(D_DATE,'YYYYMMDD') BETWEEN #{fromDate} AND #{toDate}
+          ORDER BY DH_ID DESC
+      </select>
+      <!-- 입금 내역 검색 카운트 -->
+      <select id="selectSearchWordDepositHistroyListCount" resultType="_int">
+          SELECT COUNT(*)
+          FROM ( SELECT DH.DH_ID, DH.C_ID, C.C_NAME, M.BANK_NUM, DH.D_AMOUNT, DH.D_DATE
+                 FROM DEPOSIT_HISTORY DH
+                 JOIN COMPANY C ON(DH.C_ID = C.C_ID)
+                 JOIN MEMBER M ON(C.M_ID = M.M_ID)
+                 WHERE 1=1
+                 <choose>
+                   <when test="cId != -99">
+                       AND DH.C_ID = #{cId}
+                   </when>
+                   <when test="cName != null">
+                       AND C.C_NAME LIKE '%' || #{cName} || '%'
+                   </when>
+                 </choose>)
+      </select>
+      <!-- 입금 내역 검색-->
+      <select id="selectSearchWordDepositHistoryList" resultMap="depositResultSet">
+          SELECT DH.DH_ID, DH.C_ID, C.C_NAME, M.BANK_NUM, DH.D_AMOUNT, DH.D_DATE
+          FROM DEPOSIT_HISTORY DH
+          JOIN COMPANY C ON(DH.C_ID = C.C_ID)
+          JOIN MEMBER M ON(C.M_ID = M.M_ID)
+          WHERE 1=1
+          <choose>
+             <when test="cId != -99">
+                 AND DH.C_ID = #{cId}
+                 ORDER BY DH_ID DESC
+             </when>
+             <when test="cName != null">
+                 AND C.C_NAME LIKE '%' || #{cName} || '%'
+                 ORDER BY DH_ID DESC
+             </when>
+             <otherwise>
+                 ORDER BY D_AMOUNT DESC
+             </otherwise>
+         </choose>
+      </select>
+      
+      <!-- 엑셀 파일 셀렉 -->
+      <select id="listExcelDownload" resultMap="depositResultSet">
+	      SELECT C_ID, C_NAME, BANK_NUM, ROUND(PRICE*0.85) AS D_AMOUNT, TO_CHAR(SYSDATE,'YYYY-MM') || '-05' AS D_DATE
+         FROM COMPANY C
+         JOIN MEMBER M ON(C.M_ID=M.M_ID)
+         JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE              
+                FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, M.BANK_NUM
+                       FROM PAY_DETAIL PD
+                       JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
+                       JOIN RESERVATION RE ON(RE.PA_ID=PD.PA_ID)
+                       JOIN ROOM RO ON(RE.R_ID=RO.R_ID)
+                       JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+                       JOIN MEMBER M ON(C.M_ID=M.M_ID)
+                       WHERE TO_CHAR(RE.R_EDATE,'YYYYMM') = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMM')
+                       AND PA_ID NOT IN ( SELECT PA_ID
+                                          FROM PAY_DETAIL
+                                          WHERE PD_TYPE = 'R'))                    
+                GROUP BY C_ID) USING(C_ID)
+         WHERE C_ID NOT IN( SELECT C_ID
+                            FROM DEPOSIT_HISTORY
+                            WHERE TO_CHAR(D_DATE,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM'))
+         ORDER BY C_ID
+      </select>
+</mapper>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Board">
+
+     <!-- 리뷰 -->
+     <resultMap type="Board" id="BoardResultSet">
+          <id property="bid" column="BID"/>
+          <result property="title" column="TITLE" />
+          <result property="text" column="TEXT"/>
+          <result property="board_type" column="BOARD_TYPE"/>
+          <result property="regist_date" column="REGIST_DATE"/>
+          <result property="status" column="STATUS"/>
+          <result property="modify_date" column="MODIFY_DATE"/>
+          <result property="grade" column="GRADE"/>
+          <result property="likey" column="LIKEY"/>
+          <result property="m_id" column="M_ID"/>
+          <result property="origin_id" column="ORIGIN_ID"/>
+          <result property="travel_date" column="TRAVEL_DATE"/>
+          <result property="national" column="NATIONAL"/>
+          <result property="nickname" column="NICKNAME"/>
+          <result property="interesting" column="INTEREST"/>
+          <result property="help_count" column="HELP_COUNT"/>
+          <result property="board_count" column="BOARD_COUNT"/>
+          <result property="reply_count" column="REPLY_COUNT"/>
+          <result property="attach" column="CHANGE_NAME"/>
+          <result property="create_date" column="CREATE_DATE"/>
+
+     </resultMap>
+	
+     <!-- 리뷰 인서트************2 -->
+     <insert id="insertReviewBoard" parameterType="_int">
+          INSERT INTO BOARD VALUES(SEQ_BID.NEXTVAL, '타이틀',
+                                       '텍스트', 1, SYSDATE, 'Y', SYSDATE, null, 0, #{m_id}, #{origin_id}, '여행일자')
+     </insert>
+     <delete id="deleteReview" parameterType="_int">
+     	  DELETE FROM BOARD
+     	  WHERE BID = #{bid}
+     	  AND BOARD_TYPE = 1
+     </delete>
+     
+     <!-- 리뷰 업데이트(실질적 글작성) -->
+     <update id="updateReviewBoard" parameterType="Board">
+         UPDATE BOARD
+         SET TITLE = #{title}, TEXT = #{text}, REGIST_DATE = SYSDATE, GRADE = #{grade}, MODIFY_DATE = SYSDATE, TRAVEL_DATE = #{travel_date}
+         WHERE BID = (SELECT MAX(BID) FROM BOARD WHERE M_ID = #{m_id})
+     </update>
+     
+     <!-- 리뷰 진짜 업데이트 -->
+     <update id="updateReview" parameterType="Board">
+     	 UPDATE BOARD
+     	 SET TITLE = #{title}, TEXT = #{text}, GRADE = #{grade}, MODIFY_DATE = SYSDATE, TRAVEL_DATE = #{travel_date}
+     	 WHERE BID = #{bid}
+     </update>
+     
+     <!-- SELECT BID, TITLE, TEXT, BOARD_TYPE , REGIST_DATE, STATUS, MODIFY_DATE, GRADE, LIKEY, M_ID, ORIGIN_ID
+     	FROM BOARD WHERE BOARD_TYPE = 1 AND ORIGIN_ID = #{ origin_id } -->
+     <select id = "selectReview" resultMap = "BoardResultSet" >
+     	SELECT DISTINCT B.BID, B.TITLE, B.TEXT, B.BOARD_TYPE, B.REGIST_DATE, B.STATUS, B.MODIFY_DATE, B.GRADE, B.LIKEY,
+     			 B.M_ID, B.ORIGIN_ID, M.REGIST_DATE AS CREATE_DATE, M.NICKNAME, M.INTEREST, M.NATIONAL, M.EMAIL,
+     			 (SELECT COUNT(*) FROM THUMBS_UP WHERE STATUS = 'Y' AND T_TARGET = B.M_ID) AS HELP_COUNT,
+                 (SELECT COUNT(*) FROM BOARD WHERE M_ID = B.M_ID) AS BOARD_COUNT,
+                 (SELECT COUNT(*) FROM REPLY WHERE M_ID = B.M_ID) AS REPLY_COUNT,
+                 CHANGE_NAME
+        FROM BOARD B
+        JOIN MEMBER M ON(B.M_ID=M.M_ID)
+        LEFT JOIN (SELECT REF_ID, CHANGE_NAME
+                   FROM ATTACHMENT
+                   WHERE FID IN (SELECT MAX(FID) AS FID
+                                 FROM ATTACHMENT
+                                 WHERE A_LEVEL = 2
+                                 GROUP BY REF_ID)) AT ON (B.M_ID=AT.REF_ID)
+		WHERE BOARD_TYPE = 1 AND ORIGIN_ID = #{origin_id}
+		ORDER BY BID DESC
+     </select>
+     
+     <select id = "selectReview2" resultMap = "BoardResultSet" parameterType="_int">
+     	SELECT BID, TITLE, TEXT, BOARD_TYPE, REGIST_DATE, STATUS, MODIFY_DATE, GRADE, LIKEY, M_ID, ORIGIN_ID, TRAVEL_DATE
+     	FROM BOARD
+     	WHERE BOARD_TYPE = 1
+     	AND ORIGIN_ID = #{contentid}
+     </select>
+     
+     <select id = "selectReviewCount2" parameterType="_int" resultType = "_int">
+     	SELECT COUNT(*)
+     	FROM BOARD WHERE BOARD_TYPE = 1 AND BID = #{ bid }
+     </select>
+
+     <!-- 리뷰 내역 수 조회용 -->
+     <select id= "selectReviewCount" resultType = "_int" parameterType="_int">
+     	SELECT COUNT(*)
+     	FROM BOARD 
+     	WHERE BOARD_TYPE = 1
+     	AND ORIGIN_ID = #{ origin_id }
+     </select>
+     
+     <!-- 리뷰 삭제(취소시 미리 인서트해놓은 것) -->
+     <delete id = "deletePrevReview" parameterType="_int">
+     	DELETE FROM BOARD
+     	WHERE BID = (SELECT MAX(BID) FROM BOARD WHERE M_ID = #{mid})
+     </delete>
+     
+     <!-- 리뷰 조건 -->
+     <select id = "reviewBool" parameterType="Board" resultType = "_int">
+     	SELECT COUNT(C.C_ORIGINID)
+		FROM PAYMENT P
+			JOIN RESERVATION RS ON(RS.PA_ID = P.PA_ID)
+			JOIN ROOM R ON(RS.R_ID = R.R_ID)
+			JOIN COMPANY C ON(C.C_ID = R.C_ID)
+			WHERE P.M_ID = #{m_id}
+			AND C.C_ORIGINID = #{origin_id}
+     </select>
+     
+     <select id = "selectQ" resultMap = "BoardResultSet">
+     	<!-- SELECT BID, TITLE, TEXT, BOARD_TYPE , REGIST_DATE, STATUS, MODIFY_DATE, GRADE, LIKEY, M_ID, ORIGIN_ID
+     	FROM BOARD WHERE BOARD_TYPE = 2 AND ORIGIN_ID = #{ origin_id } -->
+     	SELECT DISTINCT B.BID, B.TITLE, B.TEXT, B.BOARD_TYPE, B.REGIST_DATE, B.STATUS, B.MODIFY_DATE, B.GRADE, B.LIKEY,
+     			 B.M_ID, B.ORIGIN_ID, M.REGIST_DATE AS CREATE_DATE, M.NICKNAME, M.INTEREST, M.NATIONAL, M.EMAIL,
+     			 (SELECT COUNT(*) FROM THUMBS_UP WHERE STATUS = 'Y' AND T_TARGET = B.M_ID) AS HELP_COUNT,
+                 (SELECT COUNT(*) FROM BOARD WHERE M_ID = B.M_ID) AS BOARD_COUNT,
+                 (SELECT COUNT(*) FROM REPLY WHERE M_ID = B.M_ID) AS REPLY_COUNT,
+                 CHANGE_NAME
+        FROM BOARD B
+        JOIN MEMBER M ON(B.M_ID=M.M_ID)
+        LEFT JOIN (SELECT REF_ID, CHANGE_NAME
+                   FROM ATTACHMENT
+                   WHERE FID IN (SELECT MAX(FID) AS FID
+                                 FROM ATTACHMENT
+                                 WHERE A_LEVEL = 2
+                                 GROUP BY REF_ID)) AT ON (B.M_ID=AT.REF_ID)
+		WHERE BOARD_TYPE = 2 AND ORIGIN_ID = #{origin_id}
+		ORDER BY BID DESC
+     </select>
+     
+     <!-- Q작성 인서트 -->
+     <insert id="insertQ" parameterType="Board">
+     	INSERT INTO BOARD VALUES(SEQ_BID.NEXTVAL, 'Q는 없음',
+                                       #{text}, 2, SYSDATE, 'Y', SYSDATE, null, 0, #{m_id}, #{origin_id}, 'Q는 없음')
+     </insert>
+     
+     <!-- Q내역 수 조회용 -->
+     <select id= "selectQCount" resultType = "_int" parameterType="_int">
+     	SELECT COUNT(*)
+     	FROM BOARD 
+     	WHERE BOARD_TYPE = 2
+     	AND ORIGIN_ID = #{ origin_id }
+     </select>
+     <!-- <select id = "selectReviewDetail" parameterType="_int" resultMap = "BoardResultSet">
+     	SELECT BID, TITLE, TEXT, BOARD_TYPE, REGIST_DATE, STATUS, MODIFY_DATE, GRADE, LIKEY, M_ID, ORIGIN_ID, TRAVEL_DATE
+     	FROM BOARD
+     	WHERE BID = #{ bid } 
+     </select> -->
+     
+     <select id = "selectReviewDetail" parameterType="_int" resultMap = "BoardResultSet">
+     	SELECT DISTINCT B.BID, B.TITLE, B.TEXT, B.BOARD_TYPE, B.REGIST_DATE, B.STATUS, B.MODIFY_DATE, B.GRADE, B.LIKEY,
+     			 B.M_ID, B.ORIGIN_ID, M.REGIST_DATE AS CREATE_DATE, M.NICKNAME, M.INTEREST, M.NATIONAL, M.EMAIL, B.TRAVEL_DATE,
+     			 (SELECT COUNT(*) FROM THUMBS_UP WHERE STATUS = 'Y' AND T_TARGET = B.M_ID) AS HELP_COUNT,
+                 (SELECT COUNT(*) FROM BOARD WHERE M_ID = B.M_ID) AS BOARD_COUNT,
+                 (SELECT COUNT(*) FROM REPLY WHERE M_ID = B.M_ID) AS REPLY_COUNT,
+                 CHANGE_NAME
+        FROM BOARD B
+        JOIN MEMBER M ON(B.M_ID=M.M_ID)
+        LEFT JOIN (SELECT REF_ID, CHANGE_NAME
+                   FROM ATTACHMENT
+                   WHERE FID IN (SELECT MAX(FID) AS FID
+                                 FROM ATTACHMENT
+                                 WHERE A_LEVEL = 2
+                                 GROUP BY REF_ID)) AT ON (B.M_ID=AT.REF_ID)
+		JOIN MEMBER M ON(B.M_ID = M.M_ID)
+		WHERE B.BID = #{bid}
+
+     </select>
+     
+     <update id = "updateThumbsReview" parameterType="_int">
+     	UPDATE BOARD
+     	SET LIKEY = (SELECT COUNT(*)
+     				 FROM THUMBS_UP
+     				 WHERE REF_ID = #{ref_id}
+     				 AND STATUS ='Y')
+     	WHERE BID = #{ref_id}			 
+     </update>
+     
+     <select id = "selectBestReview" parameterType="_int" resultMap="BoardResultSet">
+     	SELECT BID, TITLE, TEXT, BOARD_TYPE, REGIST_DATE, STATUS, MODIFY_DATE, GRADE, LIKEY, M_ID, ORIGIN_ID, TRAVEL_DATE
+     	FROM (SELECT BID, TITLE, TEXT, BOARD_TYPE, REGIST_DATE, STATUS, MODIFY_DATE, GRADE, LIKEY, M_ID, ORIGIN_ID, TRAVEL_DATE
+     		  FROM BOARD
+     		  WHERE BOARD_TYPE = 1
+     		  AND ORIGIN_ID = #{contentid}
+     		  ORDER BY LIKEY DESC)
+		WHERE ROWNUM <![CDATA[<]]>= 3
+     </select>
+     
+     <!-- 음식점,오락거리 평점조회 -->
+     <select id="selectGradeCheck" resultMap="BoardResultSet">
+     	SELECT ORIGIN_ID, NVL(AVG(GRADE), 0) AS GRADE
+     	FROM BOARD
+     	WHERE ORIGIN_ID = #{origin_id}
+     	GROUP BY ORIGIN_ID
+     </select>
+     
+     <select id="selectFoodStoreTop3" resultMap="BoardResultSet">
+     	SELECT ORIGIN_ID, GRADE, BOARD_COUNT
+     	FROM (SELECT ORIGIN_ID, NVL(AVG(GRADE), 0) AS GRADE, NVL(COUNT(ORIGIN_ID), 0) AS BOARD_COUNT
+     		  FROM BOARD
+     		  WHERE BOARD_TYPE = 1
+     		  GROUP BY ORIGIN_ID
+     		  ORDER BY GRADE DESC, BOARD_COUNT DESC)
+     	WHERE ROWNUM <![CDATA[<]]> 4
+     </select>
+     
+     
+</mapper>

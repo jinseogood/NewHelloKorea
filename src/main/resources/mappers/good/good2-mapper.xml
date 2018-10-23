@@ -1,0 +1,48 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Good2">
+   
+   <resultMap type="Good2" id="Good2ResultSet">
+   	<id property="lid" column="L_ID"/>
+   	<result property="lType" column="L_TYPE"/>
+   	<result property="originId" column="ORIGIN_ID"/>
+   	<result property="mid" column="M_ID"/>
+   	<result property="cid" column="C_ID"/>
+   	<result property="grade" column="GRADE"/>
+   </resultMap>
+   
+   <!-- 동일한 찜 있는지 확인 // 호텔 외 다른유형들-->
+   <select id="selectOnedibsCheckStatus" parameterType="Good2" resultType="_int">
+   	SELECT COUNT(*)
+   	FROM GOOD
+   	WHERE M_ID = #{mid}
+   	AND ORIGIN_ID = #{originId}
+   </select>
+   
+   <!-- 인서트 -->
+   <insert id="insertDibsInfo" parameterType="Good2">
+   	INSERT INTO GOOD(L_ID, L_TYPE, ORIGIN_ID, M_ID) 
+   	VALUES(SEQ_L_ID.NEXTVAL, #{lType}, #{originId}, #{mid})
+   </insert>
+   
+   <!-- 딜리트 -->
+   <delete id="deleteDibsInfo" parameterType="Good2">
+   	DELETE FROM GOOD
+   	WHERE M_ID = #{mid}
+   	AND ORIGIN_ID = #{originId}
+   </delete>
+   
+   
+   <select id="dibsGradeInfo" resultMap="Good2ResultSet">
+   	SELECT L_ID, L_TYPE, G.ORIGIN_ID, G.M_ID, C_ID, NVL(AVG(GRADE), 0) AS GRADE
+   	FROM GOOD G
+   	LEFT JOIN BOARD B ON (G.ORIGIN_ID = B.ORIGIN_ID)
+   	WHERE C_ID IS NULL
+   	GROUP BY L_ID, L_TYPE, G.ORIGIN_ID, G.M_ID, C_ID
+   </select>
+	
+	
+</mapper>

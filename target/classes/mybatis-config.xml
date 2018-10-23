@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- xml문서의 유효성 체크를 위해 필요한 부분 -->
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  <configuration>
+     
+      <typeAliases>
+          <typeAlias type="com.kh.hello.common.Attachment" alias="Attachment"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.SalesStatistics" alias="SalesStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.CompanyRegistStatistics" alias="CompanyRegistStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.CompanyPeriodStatistics" alias="CompanyPeriodStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.CompanyAreaStatistics" alias="CompanyAreaStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.PlatformStatistics" alias="PlatformStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.InterestStatistics" alias="InterestStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.NationalStatistics" alias="NationalStatistics"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.Deposit" alias="Deposit"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.CompanyDetails" alias="CompanyDetails"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.Approval" alias="Approval"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.Question" alias="Question"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.Blacklist" alias="Blacklist"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.Report" alias="Report"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.DatePick" alias="DatePick"/>
+          <typeAlias type="com.kh.hello.admin.model.vo.Reservation" alias="Reservation"/>
+          <typeAlias type="com.kh.hello.message.model.vo.Message" alias="Message"/>
+          <typeAlias type="com.kh.hello.member.model.vo.Member" alias="Member"/>
+		  <typeAlias type="com.kh.hello.member.model.vo.MemberGoods" alias="MemberGoods"/>
+		  <typeAlias type="com.kh.hello.member.model.vo.BoardAndReply" alias="BoardAndReply"/>
+		  <typeAlias type="com.kh.hello.member.model.vo.MemberReservation" alias="MemberReservation"/>
+		  <typeAlias type="com.kh.hello.member.model.vo.MemberPoint" alias="MemberPoint"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.Company" alias="Company"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.Room" alias="Room"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.RegistrationHistory" alias="RH"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.SearchProduct" alias="Product"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.OneProduct" alias="OneProduct"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.SellerReservation" alias="SellerReservation"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.SellerOneReservation" alias="SellerOneReservation"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.Revenue" alias="Revenue"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.CompanyGoodStat" alias="CompanyGoodStat"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.CompanySaleStat" alias="CompanySaleStat"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.CompanyOKResult" alias="CompanyOKResult"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.CompanyReviewResult" alias="CompanyReviewResult"/>
+          <typeAlias type="com.kh.hello.seller.model.vo.CompanyQnAResult" alias="CompanyQnAResult"/>
+          <typeAlias type="com.kh.hello.board.model.vo.Board" alias="Board"/>
+          <typeAlias type="com.kh.hello.board.model.vo.Reply" alias="Reply"/>
+		  <typeAlias type="com.kh.hello.board.model.vo.Report" alias="rReport"/>
+		  <typeAlias type="com.kh.hello.board.model.vo.Thumbs" alias="Thumbs"/>
+		  <typeAlias type="com.kh.hello.board.model.vo.Point" alias="Point"/>
+          <typeAlias type="com.kh.hello.good.model.vo.Good" alias="Good"/>
+          <typeAlias type="com.kh.hello.payment.model.vo.Payment" alias="Payment"/>
+          <typeAlias type="com.kh.hello.payment.model.vo.PayDetail" alias="PayDetail"/>
+		  <typeAlias type="com.kh.hello.company.model.vo.Company2" alias="Company2"/>
+		  <typeAlias type="com.kh.hello.company.model.vo.Room2" alias="Room2"/>
+		  <typeAlias type="com.kh.hello.company.model.vo.Reservation2" alias="Reservation2"/>
+		  <typeAlias type="com.kh.hello.company.model.vo.Reservations" alias="Reservations"/>
+		  <typeAlias type="com.kh.hello.good.model.vo.Good2" alias="Good2"/>
+      </typeAliases>
+  
+      <mappers>
+          <mapper resource="mappers/admin/statistics-mapper.xml"/>
+          <mapper resource="mappers/admin/deposit-mapper.xml"/>
+          <mapper resource="mappers/admin/company-mapper.xml"/>
+          <mapper resource="mappers/admin/question-mapper.xml"/>
+          <mapper resource="mappers/admin/blacklist-mapper.xml"/>
+          <mapper resource="mappers/admin/reservation-mapper.xml"/>
+          <mapper resource="mappers/admin/report-mapper.xml"/>
+          <mapper resource="mappers/admin/message-mapper.xml"/>
+          <mapper resource="mappers/member/member-mapper.xml"/>
+          <mapper resource="mappers/member/profileAT-mapper.xml"/>
+          <mapper resource="mappers/member/memberGoods-mapper.xml"/>
+          <mapper resource="mappers/member/boardAndReply-mapper.xml"/>
+          <mapper resource="mappers/member/memberReservation-mapper.xml"/>
+          <mapper resource="mappers/member/memberPoint-mapper.xml"/>
+          <mapper resource="mappers/seller/company-mapper.xml"/>
+          <mapper resource="mappers/seller/room-mapper.xml"/>
+          <mapper resource="mappers/seller/rh-mapper.xml"/>
+          <mapper resource="mappers/seller/sellerAT-mapper.xml"/>
+          <mapper resource="mappers/seller/product-mapper.xml"/>
+          <mapper resource="mappers/seller/oneproduct-mapper.xml"/>
+          <mapper resource="mappers/seller/reservation-mapper.xml"/>
+          <mapper resource="mappers/seller/onereservation-mapper.xml"/>
+          <mapper resource="mappers/seller/revenue-mapper.xml"/>
+          <mapper resource="mappers/board/board-mapper.xml"/>
+          <mapper resource="mappers/board/attachment-mapper.xml"/>
+          <mapper resource="mappers/board/reply-mapper.xml"/>
+          <mapper resource="mappers/board/report-mapper.xml"/>
+          <mapper resource="mappers/board/thumbs-mapper.xml"/>
+          <mapper resource="mappers/board/point-mapper.xml"/>
+          <mapper resource="mappers/good/good-mapper.xml" />
+          <mapper resource="mappers/good/good-mapper.xml"/>
+          <mapper resource="mappers/payment/payment-mapper.xml"/>
+          <mapper resource="mappers/payment/paydetail-mapper.xml"/>
+          <mapper resource="mappers/company/company2-mapper.xml"/>
+          <mapper resource="mappers/company/room2-mapper.xml"/>
+          <mapper resource="mappers/company/reservation2-mapper.xml"/>
+          <mapper resource="mappers/company/reservations-mapper.xml"/>
+          <mapper resource="mappers/good/good2-mapper.xml"/>
+      </mappers> 
+  
+  </configuration>

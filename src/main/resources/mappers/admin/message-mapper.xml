@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Message">
+
+	<!-- MESSAGE 테이블 값 + 닉네임 -->
+	<resultMap type="Message" id="messageResultSet">
+		<id property="msgId" column="MSG_ID" />
+		<result property="receiveId" column="RECEIVE_ID" />
+		<result property="sendId" column="SEND_ID" />
+		<result property="nickname" column="NICKNAME" />
+		<result property="title" column="TITLE" />
+		<result property="content" column="CONTENT" />
+		<result property="sendDate" column="SEND_DATE" />
+		<result property="readDate" column="READ_DATE" />
+		<result property="status" column="STATUS" />
+		<result property="mLevel" column="M_LEVEL" />
+		<result property="pDate" column="P_DATE" />
+	</resultMap>
+	
+	<!-- 문의 답변 발송 -->
+	<insert id="insertAnswerMsg" parameterType="Message">
+        INSERT INTO MESSAGE
+        VALUES (SEQ_MSG_ID.NEXTVAL, #{receiveId}, 0, '문의 답변 드립니다',
+                #{content}, SYSDATE, NULL, 'Y', 'G', NULL)
+    </insert>
+    
+    <!-- 문의 처리일 입력 쿼리문  -->
+	<update id="updatepDate" parameterType="Message">
+		UPDATE MESSAGE
+		SET P_DATE = SYSDATE
+		WHERE MSG_ID = #{msgId} 
+	</update>
+	
+	<!-- 제휴 해지 알림을 위해 아이디 찾아오기 -->
+	<select id="selectReceiveId" parameterType="_int" resultMap="messageResultSet">
+	    SELECT M.M_ID AS RECEIVE_ID
+	    FROM MEMBER M
+        JOIN COMPANY C ON(M.M_ID=C.M_ID)
+        JOIN COM_REGIST CR ON(C.C_ID=CR.C_ID)
+        WHERE CR_ID = #{crId}
+	</select>
+	
+	<!-- 제휴 해지 알림 메세지 발송 -->
+	<insert id="insertTerminateMsg">
+	    INSERT INTO MESSAGE
+        VALUES (SEQ_MSG_ID.NEXTVAL, #{receiveId}, 0, '중도 해지 안내드립니다',
+                #{content}, SYSDATE, NULL, 'Y', 'G', NULL)
+	</insert>
+
+    <!-- 받은 메세지 페이징 -->
+    <select id="getReceiveMessageCount" parameterType="_int" resultType="_int">
+        SELECT COUNT(*)
+        FROM ( SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+               FROM MESSAGE MS
+               JOIN MEMBER M
+               ON(MS.SEND_ID=M.M_ID)
+               WHERE MS.RECEIVE_ID = #{mId}
+               AND MS.STATUS = 'Y')
+    </select>
+    
+	<!-- 받은 메세지 리스트  -->
+	<select id="selectReceiveMessage" parameterType="_int" resultMap="messageResultSet">
+		SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+        FROM MESSAGE MS
+        JOIN MEMBER M
+        ON(MS.SEND_ID=M.M_ID)
+        WHERE MS.RECEIVE_ID = #{mId}
+        AND MS.STATUS = 'Y'
+        ORDER BY MSG_ID DESC
+	</select> 
+	
+	<!-- 받은 메세지 읽었을 때 읽은 날짜 업데이트 쿼리문 -->
+	<update id="updateMessageReadDate" parameterType="_int">
+		UPDATE MESSAGE
+		SET READ_DATE = SYSDATE
+		WHERE MSG_ID = #{msgId}
+	</update>
+	
+	<!-- 메세지 상세 조회용 쿼리문 -->
+	<select id="selectReceiveMessageDetail" parameterType="_int" resultMap="messageResultSet">
+		SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+        FROM MESSAGE MS
+        JOIN MEMBER M
+        ON(MS.SEND_ID=M.M_ID)
+        WHERE MS.MSG_ID = #{msgId}
+	</select>
+	
+	<!-- 받은 메세지 삭제 쿼리문 -->
+	<update id="updateStatus" parameterType="_int">
+		UPDATE MESSAGE
+		SET STATUS = 'N'
+		WHERE MSG_ID = #{msgId} 
+	</update> 
+    
+    <!-- 보낸 메세지 개수 조회용 쿼리문 -->
+    <select id="getSendMessageCount" resultType="_int">
+        SELECT COUNT(*)
+        FROM ( SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+		       FROM MESSAGE MS
+		       JOIN MEMBER M
+		       ON(MS.RECEIVE_ID=M.M_ID)
+		       WHERE MS.SEND_ID = #{sendId})
+    </select> 
+    
+    <!-- 보낸 메세지 리스트 조회용 쿼리문  -->
+	<select id="selectSendMessage" parameterType="_int" resultMap="messageResultSet">
+		SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+		FROM MESSAGE MS
+		JOIN MEMBER M
+		ON(MS.RECEIVE_ID=M.M_ID)
+		WHERE MS.SEND_ID = #{sendId}
+		ORDER BY MSG_ID DESC
+	</select>
+	
+	<!-- 보낸 메세지 상세  -->
+	 <select id="selectSendMessageDetail" parameterType="_int" resultMap="messageResultSet">
+		SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+        FROM MESSAGE MS
+        JOIN MEMBER M
+        ON(MS.RECEIVE_ID=M.M_ID)
+        WHERE MS.MSG_ID = #{msgId}
+	</select>
+	
+	<!-- 메세지 답장(발송) -->
+	<insert id="sendMessage">
+	    INSERT INTO MESSAGE
+        VALUES (SEQ_MSG_ID.NEXTVAL, #{receiveId}, #{sendId}, #{title},
+                #{content}, SYSDATE, NULL, 'Y', 'G', NULL)
+	</insert>
+	<!-- 문의 발송 -->
+	<insert id="insertQuestion">
+	    INSERT INTO MESSAGE
+        VALUES (SEQ_MSG_ID.NEXTVAL, 0, #{sendId}, #{title},
+                #{content}, SYSDATE, NULL, 'Y', 'Q', NULL)
+	</insert>
+	
+	<!-- 메인 새로운 메세지 존재 여부 -->
+	<select id="selectNewMessage" parameterType="_int" resultMap="messageResultSet">
+	    SELECT MS.MSG_ID, MS.RECEIVE_ID, MS.SEND_ID, MS.TITLE, MS.CONTENT, MS.SEND_DATE, MS.READ_DATE, MS.P_DATE, M.NICKNAME 
+        FROM MESSAGE MS
+        JOIN MEMBER M
+        ON(MS.SEND_ID=M.M_ID)
+        WHERE MS.RECEIVE_ID = #{mId}
+        AND MS.STATUS = 'Y'
+        AND MS.READ_DATE IS NULL
+	</select>
+</mapper>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:root-context.xml
+			/WEB-INF/config/spring-security.xml
+		</param-value>
+	</context-param>
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Processes application requests -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/action-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Member -->
+	<servlet>
+		<servlet-name>member</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/member-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>member</servlet-name>
+		<url-pattern>*.me</url-pattern>
+	</servlet-mapping>
+	<!-- userMypage -->
+	<servlet>
+		<servlet-name>user</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/user-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>user</servlet-name>
+		<url-pattern>*.um</url-pattern>
+	</servlet-mapping>
+	<!-- Board -->
+	<servlet>
+		<servlet-name>board</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/board-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    <servlet-mapping>
+    	<servlet-name>board</servlet-name>
+    	<url-pattern>*.bo</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Seller -->
+	<servlet>
+		<servlet-name>seller</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/seller-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    <servlet-mapping>
+    	<servlet-name>seller</servlet-name>
+    	<url-pattern>*.sell</url-pattern>
+    </servlet-mapping>
+  
+    <!-- Good -->
+    <servlet>
+    	<servlet-name>good</servlet-name>
+    	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    	<init-param>
+    		<param-name>contextConfigLocation</param-name>
+    		<param-value>/WEB-INF/config/good-servlet.xml</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+    	<servlet-name>good</servlet-name>
+    	<url-pattern>*.good</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Admin -->
+    <servlet>
+    	<servlet-name>admin</servlet-name>
+    	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    	<init-param>
+    		<param-name>contextConfigLocation</param-name>
+    		<param-value>/WEB-INF/config/admin-servlet.xml</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+    	<servlet-name>admin</servlet-name>
+    	<url-pattern>*.ad</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Payment -->
+	<servlet>
+		<servlet-name>payment</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/payment-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    <servlet-mapping>
+    	<servlet-name>payment</servlet-name>
+    	<url-pattern>*.pay</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Company2 -->
+    <servlet>
+    	<servlet-name>company</servlet-name>
+    	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    	<init-param>
+    		<param-name>contextConfigLocation</param-name>
+    		<param-value>/WEB-INF/config/company-servlet.xml</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+    	<servlet-name>company</servlet-name>
+    	<url-pattern>*.com</url-pattern>
+    </servlet-mapping>
+
+	<!-- 한글 인코딩 처리를 위한 filter Mapping -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+	
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>my-secure-app</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+ 
+        
+ 
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+	
+</web-app>

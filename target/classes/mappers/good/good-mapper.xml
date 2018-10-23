@@ -1,0 +1,35 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Good">
+   
+   <resultMap type="Good" id="GoodResultSet">
+   	<id property="lid" column="L_ID"/>
+   	<result property="lType" column="L_TYPE" />
+   	<result property="originId" column="ORIGIN_ID" />
+   	<result property="mid" column="M_ID" />
+   	<result property="cid" column="C_ID" />
+   </resultMap>
+   
+   <!-- 동일한 찜 있는지 확인 -->
+   <select id="selectOneDibs" parameterType="Good" resultType="_int">
+   	SELECT COUNT(*)
+   	FROM GOOD
+   	WHERE M_ID = #{mid}
+   	AND ORIGIN_ID = #{originId}
+   </select>
+   
+   <insert id="insertOneDibsHotel" parameterType="Good">
+   	INSERT INTO GOOD VALUES(SEQ_L_ID.NEXTVAL, #{lType}, #{originId}, #{mid}, #{cid})
+   </insert>
+   
+   <delete id="deleteOneDibsHotel" parameterType="Good">
+   	DELETE FROM GOOD
+   	WHERE M_ID = #{mid}
+   	AND ORIGIN_ID = #{originId}
+   </delete>
+	
+	
+</mapper>

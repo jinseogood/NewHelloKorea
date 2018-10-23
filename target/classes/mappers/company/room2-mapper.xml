@@ -1,0 +1,25 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Room2">
+   <resultMap type="Room2" id="room2ResultSet">
+      <id property="rid" column="R_ID"/>
+      <result property="rType" column="R_TYPE"/>
+      <result property="rCount" column="R_COUNT"/>
+      <result property="rPrice" column="R_PRICE"/>
+      <result property="rLimit" column="R_LIMIT"/>
+      <result property="cid" column="C_ID"/>
+   </resultMap>
+   
+   <!-- 객실 조회 -->
+   <select id="selectList" resultMap="room2ResultSet">
+   		SELECT *
+   		FROM ROOM R
+   		JOIN COMPANY C ON (R.C_ID = C.C_ID)
+   		WHERE C.C_ID = #{cid}
+   </select>
+   
+	
+</mapper>

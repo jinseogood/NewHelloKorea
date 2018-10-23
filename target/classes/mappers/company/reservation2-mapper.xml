@@ -1,0 +1,44 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reservation2">
+   <resultMap type="Reservation2" id="reservation2ResultSet">
+      <id property="oid" column="O_ID"/>
+      <result property="rSdate" column="R_SDATE"/>
+      <result property="rEdate" column="R_EDATE"/>
+      <result property="people" column="PEOPLE"/>
+      <result property="oRcount" column="O_RCOUNT"/>
+      <result property="rid" column="R_ID"/>
+      <result property="paId" column="PA_ID"/>
+      <result property="roomName" column="R_TYPE"/>
+      <result property="cAddress" column="C_ADDRESS"/>
+      <result property="cName" column="C_NAME"/>
+      <result property="price" column="R_PRICE"/>
+      <result property="cid" column="C_ID"/>
+      <result property="contentid" column="C_ORIGINID"/>
+      <result property="period" column="PERIOD"/>
+   </resultMap>
+   
+   <!-- 객실 주문 -->
+   <insert id="insertReservation">
+   <selectKey keyProperty="oid" resultType="_int" order="AFTER">
+   	SELECT SEQ_O_ID.CURRVAL FROM DUAL
+   </selectKey>
+   	INSERT INTO RESERVATION
+   	VALUES(SEQ_O_ID.NEXTVAL, #{rSdate}, #{rEdate}, #{people}, #{oRcount}, #{rid}, NULL)
+   </insert>
+   
+   
+   
+   <!-- 객실 주문 후 currval 구해온 뒤 정보담기 -->
+   <select id="selectOneReservation" parameterType="Reservation2" resultMap="reservation2ResultSet">
+   	SELECT O_ID, R_SDATE, R_EDATE, PEOPLE, O_RCOUNT, R1.R_ID, R_TYPE, PA_ID, C_ADDRESS, C_NAME, R_PRICE, C_ORIGINID, C.C_ID, (R_EDATE - R_SDATE) as PERIOD
+   	FROM RESERVATION R1
+   	JOIN ROOM R2 ON (R1.R_ID = R2.R_ID)
+   	JOIN COMPANY C ON (R2.C_ID = C.C_ID)
+   	WHERE O_ID = #{oid}
+   </select>
+	
+</mapper>

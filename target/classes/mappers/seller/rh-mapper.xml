@@ -1,0 +1,27 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RH">
+	<resultMap type="RH" id="rhResultSet">
+		<id property="rhId" column="CR_ID"/>
+		<result property="cId" column="C_ID"/>
+		<result property="rDate" column="CR_DATE"/>
+		<result property="term" column="CR_TERM"/>
+		<result property="status" column="CR_STATUS"/>
+	</resultMap>
+   
+	<!-- 업체 등록 이력 추가 -->
+	<insert id="insertRH" parameterType="RH">
+		INSERT INTO COM_REGIST (CR_ID, C_ID, CR_DATE, CR_TERM, CR_STATUS) 
+		VALUES (SEQ_CR_ID.NEXTVAL, SEQ_C_ID.CURRVAL, SYSDATE, #{term}, 'N')
+	</insert>
+	
+	<!-- 업체 등록 기간 연장 -->
+	<insert id="extendsPeriod" parameterType="arraylist">
+		INSERT INTO COM_REGIST (CR_ID, C_ID, CR_DATE, CR_TERM, CR_STATUS)
+		VALUES (SEQ_CR_ID.NEXTVAL, ${list.get(0)}, SYSDATE, ${list.get(1)}, 'N')
+	</insert>
+	
+</mapper>

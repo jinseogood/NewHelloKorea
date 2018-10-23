@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Reservation">
+	<!-- 예약 내역 관리 -->
+	<!-- 예약 내역 조회 테이블 값 -->
+	<resultMap type="Reservation" id="reservationResultSet">
+		<id property="oId" column="O_ID" />
+		<result property="cName" column="C_NAME" />
+		<result property="paName" column="PA_NAME" />
+		<result property="rSDate" column="R_SDATE" />
+		<result property="rEDate" column="R_EDATE" />
+		<result property="pdDate" column="PD_DATE" />
+		<result property="rType" column="R_TYPE"/>
+		<result property="oRCount" column="O_RCOUNT"/>
+		<result property="people" column="PEOPLE"/>
+		<result property="price" column="PRICE"/>
+		<result property="pdType" column="PD_TYPE" />
+	</resultMap>
+
+	<!-- 예약 내역 수 조회용 쿼리문 -->
+	<select id="selectReservationListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT R.O_ID, C.C_NAME, PA.PA_NAME, R.R_SDATE, R.R_EDATE,
+		PD.PD_DATE, RO.R_TYPE, R.O_RCOUNT, R.PEOPLE, PD.PRICE, PD.PD_TYPE
+		FROM RESERVATION R
+		JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		JOIN PAYMENT PA ON(R.PA_ID = PA.PA_ID)
+		RIGHT OUTER JOIN PAY_DETAIL PD ON(PA.PA_ID = PD.PA_ID)
+		WHERE PD_METHOD = 'C')
+	</select>
+
+	<!-- 예약 내역 리스트 조회용 쿼리문 -->
+	<select id="selectReservationList" resultMap="reservationResultSet">
+		SELECT R.O_ID,C.C_NAME, PA.PA_NAME, R.R_SDATE, R.R_EDATE,
+		PD.PD_DATE, RO.R_TYPE, R.O_RCOUNT, R.PEOPLE, PD.PRICE, PD.PD_TYPE
+		FROM RESERVATION R
+		JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		JOIN PAYMENT PA ON(R.PA_ID = PA.PA_ID)
+		RIGHT OUTER JOIN PAY_DETAIL PD ON(PA.PA_ID = PD.PA_ID)
+		WHERE PD_METHOD = 'C'
+		ORDER BY O_ID DESC, PD_TYPE DESC
+	</select>
+
+	<!-- 예약 내역 검색 수 조회용 쿼리문 -->
+	<select id="selectSearchWordReservationListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM (SELECT R.O_ID, C.C_NAME, PA.PA_NAME, R.R_SDATE, R.R_EDATE,
+		PD.PD_DATE, RO.R_TYPE, R.O_RCOUNT, R.PEOPLE, PD.PRICE, PD.PD_TYPE
+		FROM RESERVATION R
+		JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		JOIN PAYMENT PA ON(R.PA_ID = PA.PA_ID)
+		RIGHT OUTER JOIN PAY_DETAIL PD ON(PA.PA_ID = PD.PA_ID)
+		WHERE PD_METHOD = 'C'
+		<choose>
+			<when test="oId != -99">
+				AND O_ID = #{oId}
+			</when>
+			<when test="cName != null">
+				AND C_NAME LIKE '%' || #{cName} || '%'
+			</when>
+			<otherwise>
+				AND PA_NAME LIKE '%' || #{paName}|| '%'
+			</otherwise>
+		</choose>
+		)
+	</select>
+
+	<!-- 예약 내역 검색리스트 조회용 쿼리문 -->
+	<select id="selectSearchReservationList" resultMap="reservationResultSet">
+		SELECT R.O_ID, C.C_NAME, PA.PA_NAME, R.R_SDATE, R.R_EDATE, PD.PD_DATE,
+		RO.R_TYPE, R.O_RCOUNT, R.PEOPLE, PD.PRICE, PD.PD_TYPE
+		FROM RESERVATION R
+		JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		JOIN PAYMENT PA ON(R.PA_ID = PA.PA_ID)
+		RIGHT OUTER JOIN PAY_DETAIL PD ON(PA.PA_ID = PD.PA_ID)
+		WHERE PD_METHOD = 'C'
+		<choose>
+			<when test="oId != -99">
+				AND O_ID = #{oId}
+			</when>
+			<when test="cName != null">
+				AND C_NAME LIKE '%' || #{cName} || '%'
+			</when>
+			<otherwise>
+				AND PA_NAME LIKE '%' || #{paName}|| '%'
+			</otherwise>
+		</choose>
+		ORDER BY R.O_ID DESC
+	</select>
+	
+	<!-- 예약 내역 날짜 검색 리스트 -->
+	<select id="selectSearchDateReservationListCount" resultType="_int">
+	    SELECT COUNT(*)
+		FROM ( SELECT R.O_ID, C.C_NAME, PA.PA_NAME, R.R_SDATE, R.R_EDATE, PD.PD_DATE,
+		       RO.R_TYPE, R.O_RCOUNT, R.PEOPLE, PD.PRICE, PD.PD_TYPE
+		       FROM RESERVATION R
+		       JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		       JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		       JOIN PAYMENT PA ON(R.PA_ID = PA.PA_ID)
+		       RIGHT OUTER JOIN PAY_DETAIL PD ON(PA.PA_ID = PD.PA_ID)
+               WHERE TO_CHAR(R_SDATE,'YYYYMMDD') <![CDATA[>]]>= #{fromDate}
+               AND TO_CHAR(R_EDATE,'YYYYMMDD') <![CDATA[<]]>= #{toDate}
+               AND PD_METHOD = 'C')
+	</select>
+	<!-- 예약 내역 날짜 검색 -->
+	<select id="selectSearchDateReservationList" resultMap="reservationResultSet">
+	    SELECT R.O_ID, C.C_NAME, PA.PA_NAME, R.R_SDATE, R.R_EDATE, PD.PD_DATE,
+		RO.R_TYPE, R.O_RCOUNT, R.PEOPLE, PD.PRICE, PD.PD_TYPE
+		FROM RESERVATION R
+		JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		JOIN PAYMENT PA ON(R.PA_ID = PA.PA_ID)
+		RIGHT OUTER JOIN PAY_DETAIL PD ON(PA.PA_ID = PD.PA_ID)
+        WHERE TO_CHAR(R_SDATE,'YYYYMMDD') <![CDATA[>]]>= #{fromDate}
+        AND TO_CHAR(R_EDATE,'YYYYMMDD') <![CDATA[<]]>= #{toDate}
+        AND PD_METHOD = 'C'
+        ORDER BY R.O_ID DESC
+	</select>
+	
+</mapper>

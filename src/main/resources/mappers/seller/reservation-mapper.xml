@@ -1,0 +1,188 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SellerReservation">
+	<resultMap type="SellerReservation" id="sellerreservationResultSet">
+		<id property="oId" column="O_ID"/>
+		<result property="cName" column="C_NAME"/>
+		<result property="rSDate" column="R_SDATE"/>
+		<result property="rEDate" column="R_EDATE"/>
+		<result property="paId" column="PA_ID"/>
+		<result property="paName" column="PA_NAME"/>
+		<result property="status" column="PD_TYPE"/>
+	</resultMap>
+	
+	<resultMap type="Reservation2" id="reservation2ResultSet">
+      <id property="oid" column="O_ID"/>
+      <result property="rSdate" column="R_SDATE"/>
+      <result property="rEdate" column="R_EDATE"/>
+      <result property="people" column="PEOPLE"/>
+      <result property="oRcount" column="O_RCOUNT"/>
+      <result property="rid" column="R_ID"/>
+      <result property="paId" column="PA_ID"/>
+      <result property="roomName" column="R_TYPE"/>
+      <result property="cAddress" column="C_ADDRESS"/>
+      <result property="cName" column="C_NAME"/>
+      <result property="price" column="R_PRICE"/>
+      <result property="cid" column="C_ID"/>
+      <result property="contentid" column="C_ORIGINID"/>
+      <result property="period" column="PERIOD"/>
+   </resultMap>
+	
+	<!-- 예약 내역 전체 조회 리스트 카운트 -->
+	<select id="getReservationListCount" resultType="_int" parameterType="_int">
+		SELECT COUNT(*)
+		FROM RESERVATION
+		JOIN PAYMENT USING(PA_ID)
+		JOIN PAY_DETAIL USING(PA_ID)
+		WHERE O_ID IN (SELECT O_ID
+        		      FROM RESERVATION
+              		  JOIN ROOM USING(R_ID)
+              		  JOIN COMPANY USING(C_ID)
+              		  WHERE M_ID = #{mId})
+        AND PD_METHOD LIKE 'C'
+	</select>
+	
+	<!-- 예약 내역 전체 조회 리스트 -->
+	<select id="selectReservationList" resultMap="sellerreservationResultSet" parameterType="_int">
+		SELECT O_ID, C_NAME, TO_CHAR(R_SDATE, 'YYYY-MM-DD') R_SDATE, TO_CHAR(R_EDATE, 'YYYY-MM-DD') R_EDATE, PA_ID, PA_NAME, PD_TYPE
+		FROM RESERVATION
+		JOIN PAYMENT USING(PA_ID)
+		JOIN PAY_DETAIL USING(PA_ID)
+        JOIN ROOM USING(R_ID)
+        JOIN COMPANY USING(C_ID)
+		WHERE O_ID IN (SELECT O_ID
+					  FROM RESERVATION
+					  JOIN ROOM USING(R_ID)
+					  JOIN COMPANY USING(C_ID)
+					  WHERE M_ID = #{mId})
+        AND PD_METHOD LIKE 'C'
+        ORDER BY R_SDATE DESC, R_EDATE DESC
+	</select>
+	
+	<!-- 예약 기간 검색 리스트 카운트 -->
+	<select id="getSearchDateReservationListCount" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM RESERVATION
+		JOIN PAYMENT USING(PA_ID)
+		JOIN PAY_DETAIL USING(PA_ID)
+		WHERE O_ID IN (SELECT O_ID
+					  FROM RESERVATION
+					  JOIN ROOM USING(R_ID)
+					  JOIN COMPANY USING(C_ID)
+					  WHERE M_ID = ${list.get(0)})
+		AND TO_CHAR(R_SDATE, 'YYYY-MM-DD') <![CDATA[>]]>= '${list.get(1)}'
+		AND TO_CHAR(R_EDATE, 'YYYY-MM-DD') <![CDATA[<]]>= '${list.get(2)}'
+		AND PD_METHOD LIKE 'C'
+	</select>
+	
+	<!-- 예약 기간 검색 리스트 -->
+	<select id="selectSearchDateReservationList" resultMap="sellerreservationResultSet" parameterType="arraylist">
+		SELECT O_ID, C_NAME, TO_CHAR(R_SDATE, 'YYYY-MM-DD') R_SDATE, TO_CHAR(R_EDATE, 'YYYY-MM-DD') R_EDATE, PA_ID, PA_NAME, PD_TYPE
+		FROM RESERVATION
+		JOIN PAYMENT USING(PA_ID)
+		JOIN PAY_DETAIL USING(PA_ID)
+        JOIN ROOM USING(R_ID)
+        JOIN COMPANY USING(C_ID)
+		WHERE O_ID IN (SELECT O_ID
+					  FROM RESERVATION
+					  JOIN ROOM USING(R_ID)
+					  JOIN COMPANY USING(C_ID)
+					  WHERE M_ID = ${list.get(0)})
+		AND TO_CHAR(R_SDATE, 'YYYY-MM-DD') <![CDATA[>]]>= '${list.get(1)}'
+		AND TO_CHAR(R_EDATE, 'YYYY-MM-DD') <![CDATA[<]]>= '${list.get(2)}'
+		AND PD_METHOD LIKE 'C'
+		ORDER BY R_SDATE DESC, R_EDATE DESC
+	</select>
+	
+	<!-- 예약 검색 내역 리스트 카운트 -->
+	<select id="getSearchWordReservationListCount" resultType="_int" parameterType="arraylist">
+		SELECT COUNT(*)
+		FROM RESERVATION
+		JOIN PAYMENT USING(PA_ID)
+		JOIN PAY_DETAIL USING(PA_ID)
+		WHERE O_ID IN (SELECT O_ID
+					  FROM RESERVATION
+					  JOIN ROOM USING(R_ID)
+					  JOIN COMPANY USING(C_ID)
+					  WHERE M_ID = ${list.get(0)})
+		<choose>
+			<when test="list.get(1).paName != null">
+				AND PA_NAME LIKE '%' || '${list.get(1).paName}' || '%'
+			</when>
+			<otherwise>
+				AND PD_TYPE = '${list.get(1).status}'
+			</otherwise>
+		</choose>
+		AND PD_METHOD LIKE 'C'
+	</select>
+	
+	<!-- 예약 검색 내역 리스트 -->
+	<select id="selectSearchWordReservationList" resultMap="sellerreservationResultSet" parameterType="arraylist">
+		SELECT O_ID, C_NAME, TO_CHAR(R_SDATE, 'YYYY-MM-DD') R_SDATE, TO_CHAR(R_EDATE, 'YYYY-MM-DD') R_EDATE, PA_ID, PA_NAME, PD_TYPE
+		FROM RESERVATION
+		JOIN PAYMENT USING(PA_ID)
+		JOIN PAY_DETAIL USING(PA_ID)
+        JOIN ROOM USING(R_ID)
+        JOIN COMPANY USING(C_ID)
+		WHERE O_ID IN (SELECT O_ID
+					  FROM RESERVATION
+					  JOIN ROOM USING(R_ID)
+					  JOIN COMPANY USING(C_ID)
+					  WHERE M_ID = ${list.get(0)})
+		<choose>
+			<when test="list.get(1).paName != null">
+				AND PA_NAME LIKE '%' || '${list.get(1).paName}' || '%'
+			</when>
+			<otherwise>
+				AND PD_TYPE = '${list.get(1).status}'
+			</otherwise>
+		</choose>
+		AND PD_METHOD LIKE 'C'
+		ORDER BY R_SDATE DESC, R_EDATE DESC
+	</select>
+	
+	<!-- 예약 정보에 결제 번호 추가 -->
+	<update id="updateReservation" parameterType="_int">
+		UPDATE RESERVATION
+		SET PA_ID = SEQ_PA_ID.CURRVAL
+		WHERE O_ID = #{oId}
+	</update>
+	
+	<!-- 예약 확인 창 예악 정보 조회 -->
+	<select id="selectReservation" resultMap="reservation2ResultSet" parameterType="_int">
+		SELECT O_ID, C_ID, C_ORIGINID, C_NAME, R_TYPE, R_SDATE, R_EDATE
+		FROM RESERVATION
+		JOIN ROOM USING(R_ID)
+		JOIN COMPANY USING(C_ID)
+		WHERE PA_ID = #{paId}
+	</select>
+	
+	<!-- 판매자 마이페이지 메인 예약 건수 조회 -->
+	<select id="selectReservationCount" resultType="_int" parameterType="_int">
+		SELECT NVL(COUNT(*), 0)
+		FROM RESERVATION
+		WHERE O_ID IN (SELECT O_ID
+					  FROM RESERVATION
+					  JOIN ROOM USING(R_ID)
+					  JOIN COMPANY USING(C_ID)
+					  WHERE M_ID = #{mId}
+					  AND PA_ID IS NOT NULL
+					  AND TO_CHAR(R_SDATE, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM'))
+	</select>
+	
+	<!-- 판매자 마이페이지 메인 수익 조회 -->
+	<select id="selectReservationPrice" resultType="_int" parameterType="_int">
+		SELECT NVL(ROUND(SUM(PRICE) * 0.85), 0)
+		FROM PAY_DETAIL
+		JOIN PAYMENT USING(PA_ID)
+		JOIN RESERVATION USING(PA_ID)
+		JOIN ROOM USING(R_ID)
+		JOIN COMPANY USING(C_ID)
+		WHERE COMPANY.M_ID = #{mId}
+		AND TO_CHAR(R_EDATE, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM')
+	</select>
+	
+</mapper>

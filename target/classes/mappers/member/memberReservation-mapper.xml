@@ -1,0 +1,35 @@
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberReservation">
+	<resultMap type="MemberReservation" id="MemberReservationResultSet">
+		<id property="oId" column="O_ID" />
+		<result property="rSdate" column="R_SDATE" />
+		<result property="rEdate" column="R_EDATE" />
+		<result property="people" column="PEOPLE" />
+		<result property="oRcount" column="O_RCOUNT" />
+		<result property="cName" column="C_NAME" />
+		<result property="rType" column="R_TYPE" />
+		<result property="pdType" column="PD_TYPE" />
+	</resultMap>
+	
+
+	<select id="selectReservationHistory" resultMap="MemberReservationResultSet"
+		parameterType="_int">
+		SELECT C_NAME, R_TYPE, O_ID, TO_CHAR(R_SDATE,'YY-MM-DD')AS R_SDATE ,TO_CHAR(R_EDATE,'YY-MM-DD')AS R_EDATE, PEOPLE, O_RCOUNT,
+		CASE WHEN PD_TYPE='P' THEN '구매완료' WHEN PD_TYPE='R' THEN '환불완료' END AS
+		PD_TYPE
+		FROM ( SELECT C_NAME, R_TYPE, O_ID, R_SDATE, R_EDATE, PEOPLE, O_RCOUNT,
+		PD_TYPE
+		FROM RESERVATION R
+		JOIN ROOM RO ON(R.R_ID=RO.R_ID)
+		JOIN COMPANY C ON(RO.C_ID=C.C_ID)
+		JOIN PAYMENT P ON(R.PA_ID=P.PA_ID)
+		RIGHT JOIN PAY_DETAIL PD ON(P.PA_ID=PD.PA_ID)
+		WHERE P.M_ID = #{mId})
+		ORDER BY O_ID DESC
+	</select>
+
+</mapper>
