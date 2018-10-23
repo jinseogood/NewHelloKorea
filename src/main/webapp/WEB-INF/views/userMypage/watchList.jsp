@@ -78,98 +78,100 @@
    
       <div role="tabpanel">
 
-        <!-- Nav tabs -->
-       
-        <ul class="nav nav-tabs" role="tablist" style="width:80%;margin-left:100px;margin-top:30px;">
-          <li role="presentation" class="active"><a href="#lodgment" aria-controls=lodgment role="tab" data-toggle="tab">숙박</a></li>
-          <li role="presentation"><a href="#food" aria-controls="food" role="tab" data-toggle="tab">먹거리</a></li>
-          <li role="presentation"><a href="#entertainment" aria-controls="entertainment" role="tab" data-toggle="tab">오락거리</a></li>
-        </ul>
-      
-        <!-- Tab panes -->
-        <div class="tab-content">
-          <div role="tabpanel" class="tab-pane active" id="lodgment">
-             <div class="lodgmentDiv" style="min-height:600px;">
-                  <table id="goodListTable" align="center">
-                     <thead>
-                        <tr>
-                           <th width="55px">찜번호</th>
-                           <th width="150px">관심</th>
-                           <th width="200px">업체이름</th>
-                           <th width="200px">업체번호</th>
-                        </tr>
-                        </thead>
-                     <c:forEach var="item" items="${goodsList}">
-                        <c:if test='${item.lType eq "숙박"}'>
-                        <tbody>
-                           <tr>
-                              <th>${item.lId}</th>
-                              <td>${item.lType}</td>
-                              <td>${item.cName }</td>
-                              <td>${item.cPhone }</td>
-                           </tr>
-                        </tbody>
-                        </c:if>
-                     </c:forEach>
-                        
-                     </table>
-               
-            
-            </div> 
-          </div>
-          <div role="tabpanel" class="tab-pane" id="food">
-             <div class="foodDiv">
-                <table id="foodListTable" align="center">
-                   <thead>
-                        <tr>
-                           <th width="55px">찜번호</th>
-                           <th width="150px">관심</th>
-                           <th width="200px">업체이름</th>
-                           <th width="200px">업체번호</th>
-                        </tr>
-                        </thead>
-                        <c:forEach var="item" items="${goodsList}">
-                        <c:if test='${item.lType eq "먹거리"}'>
-                        <tbody>
-                           <tr>
-                              <th>${item.lId}</th>
-                              <td>${item.lType}</td>
-                              <td>${item.cName }</td>
-                              <td>${item.cPhone }</td>
-                           </tr>
-                        </tbody>
-                        </c:if>
-                     </c:forEach>
-                </table>
-             </div>
-          
-          </div>
-          <div role="tabpanel" class="tab-pane" id="entertainment">
-                <div class="entertainmentDiv">
-                   <table id="entertainmentTable" align="center">
-                      <thead>
-                        <tr>
-                           <th width="55px">찜번호</th>
-                           <th width="150px">관심</th>
-                           <th width="200px">업체이름</th>
-                           <th width="200px">업체번호</th>
-                        </tr>
-                        </thead>
-                        <c:forEach var="item" items="${goodsList}">
-                        <c:if test='${item.lType eq "오락거리"}'>
-                        <tbody>
-                           <tr>
-                              <th>${item.lId}</th>
-                              <td>${item.lType}</td>
-                              <td>${item.cName }</td>
-                              <td>${item.cPhone }</td>
-                           </tr>
-                        </tbody>
-                        </c:if>
-                     </c:forEach>
-                   </table>
-                </div>
-          </div>
+
+		  <!-- Nav tabs -->
+		 
+		  <ul class="nav nav-tabs" role="tablist" style="width:80%;margin-left:100px;margin-top:30px;">
+		    <li role="presentation" class="active"><a href="#lodgment" aria-controls=lodgment role="tab" data-toggle="tab">숙박</a></li>
+		    <li role="presentation"><a href="#food" aria-controls="food" role="tab" data-toggle="tab">먹거리</a></li>
+		    <li role="presentation"><a href="#entertainment" aria-controls="entertainment" role="tab" data-toggle="tab">오락거리</a></li>
+		  </ul>
+		
+		  <!-- Tab panes -->
+		  <div class="tab-content">
+		    <div role="tabpanel" class="tab-pane active" id="lodgment">
+		    	<div class="lodgmentDiv" style="min-height:600px;">
+						<table id="goodListTable" align="center">
+							<thead>
+								<tr>
+									<th width="55px">찜번호</th>
+									<th width="150px">관심</th>
+									<th width="200px">업체이름</th>
+									<th width="200px">업체번호</th>
+								</tr>
+								</thead>
+							<c:forEach var="item" items="${goodsList}">
+								<c:if test='${item.lType eq "숙박"}'>
+								<tbody>
+									<tr>
+										<th>${item.lId}</th>
+										<td>${item.lType}</td>
+										<td>${item.cName }</td>
+										<td>${item.cPhone }</td>
+									</tr>
+								</tbody>
+								</c:if>
+							</c:forEach>
+								
+							</table>
+					
+				
+				</div> 
+		    </div>
+		    <div role="tabpanel" class="tab-pane" id="food">
+		    	<div class="foodDiv" style="min-height:600px;">
+		    		<table id="foodListTable" align="center">
+		    			<thead>
+								<tr>
+									<th width="55px">찜번호</th>
+									<th width="150px">관심</th>
+									<th width="200px">업체이름</th>
+									<th width="200px">업체번호</th>
+								</tr>
+								</thead>
+								<c:forEach var="item" items="${goodsList}">
+								<c:if test='${item.lType eq "먹거리"}'>
+								<tbody>
+									<tr>
+										<th>${item.lId}</th>
+										<td>${item.lType}</td>
+										<td>${item.cName }</td>
+										<td>${item.cPhone }</td>
+									</tr>
+								</tbody>
+								</c:if>
+							</c:forEach>
+		    		</table>
+		    	</div>
+		    
+		    </div>
+		    <div role="tabpanel" class="tab-pane" id="entertainment">
+		    		<div class="entertainmentDiv" style="min-height:600px;">
+		    			<table id="entertainmentTable" align="center">
+		    				<thead>
+								<tr>
+									<th width="55px">찜번호</th>
+									<th width="150px">관심</th>
+									<th width="200px">업체이름</th>
+									<th width="200px">업체번호</th>
+								</tr>
+								</thead>
+								<c:forEach var="item" items="${goodsList}">
+								<c:if test='${item.lType eq "오락거리"}'>
+								<tbody>
+									<tr>
+										<th>${item.lId}</th>
+										<td>${item.lType}</td>
+										<td>${item.cName }</td>
+										<td>${item.cPhone }</td>
+									</tr>
+								</tbody>
+								</c:if>
+							</c:forEach>
+		    			</table>
+		    		</div>
+		    </div>
+
   </div>
 
 </div>

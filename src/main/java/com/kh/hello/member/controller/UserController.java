@@ -107,6 +107,7 @@ public class UserController {
    @RequestMapping(value="watchList.um")
    public String wachList(Model model,HttpServletRequest request){
 
+
       Member m=(Member)request.getSession().getAttribute("loginUser");
       
       
