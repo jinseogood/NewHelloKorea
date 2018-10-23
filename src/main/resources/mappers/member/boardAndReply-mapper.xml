@@ -5,7 +5,7 @@
 
 <mapper namespace="BoardAndReply">
    <resultMap type="BoardAndReply" id="boardAndReplyResultSet">
-      <id property="bId" column="B_ID"/>
+      <id property="bId" column="BID"/>
       <result property="title" column="TITLE"/>
       <result property="boardType" column="BOARD_TYPE"/>
       <result property="likey" column="LIKEY"/>
@@ -17,14 +17,16 @@
 	<select id="selectboreList" resultMap="boardAndReplyResultSet" parameterType="_int">
 	SELECT BID,TITLE,BOARD_TYPE,MODIFY_DATE,LIKEY,R_COUNT
 	FROM BOARD
-	JOIN (SELECT B.BID,COUNT(*)
+	JOIN (SELECT B.BID,COUNT(CASE WHEN REPLY_ID IS NOT NULL THEN 1 END)
 	AS R_COUNT
 		FROM BOARD B
-		RIGHT JOIN REPLY R
+		LEFT JOIN REPLY R
 	ON (B.BID=R.BID)
 		WHERE B.M_ID=#{mId}
+		AND B.BOARD_TYPE = 1
 		GROUP BY B.BID)
 	USING(BID)
+	ORDER BY BID DESC
 	</select>
 	
 	

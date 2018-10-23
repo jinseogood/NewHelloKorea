@@ -16,10 +16,10 @@
 	<!-- 수익 전체 조회 리스트 카운트 -->
 	<select id="getRevenueListCount" resultType="_int" parameterType="_int">
 		SELECT COUNT(*)
-		FROM ( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		FROM ( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, R_EDATE || '-05' AS D_DATE, RCOUNT
         	   FROM COMPANY C
         	   JOIN MEMBER M ON(C.M_ID=M.M_ID)
-        	   JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+        	   JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT,  TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') R_EDATE
                		  FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
                       		 FROM PAY_DETAIL PD
                       		 JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
@@ -32,15 +32,15 @@
                       		 AND PA_ID NOT IN ( SELECT PA_ID
                                          		FROM PAY_DETAIL
                                          		WHERE PD_TYPE = 'R'))                    
-               		  GROUP BY C_ID, R_EDATE) USING(C_ID) )
+               		  GROUP BY C_ID, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM')) USING(C_ID) )
 	</select>
 	
 	<!-- 수익 전체 조회 리스트 -->
 	<select id="selectRevenueList" resultMap="revenueResultSet" parameterType="_int">
-		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, R_EDATE || '-05' AS D_DATE, RCOUNT
         FROM COMPANY C
         JOIN MEMBER M ON(C.M_ID=M.M_ID)
-        JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+        JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') R_EDATE
                FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
                       FROM PAY_DETAIL PD
                       JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
@@ -53,17 +53,17 @@
                       AND PA_ID NOT IN ( SELECT PA_ID
                                          FROM PAY_DETAIL
                                          WHERE PD_TYPE = 'R'))                    
-               GROUP BY C_ID, R_EDATE) USING(C_ID)
-        ORDER BY D_DATE
+               GROUP BY C_ID, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM')) USING(C_ID)
+        ORDER BY D_DATE DESC
 	</select>
 	
 	<!-- 수익 기간 검색 조회 리스트 카운트 -->
 	<select id="getSearchDateRevenueListCount" resultType="_int" parameterType="arraylist">
 		SELECT COUNT(*)
-		FROM( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		FROM( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, R_EDATE || '-05' AS D_DATE, RCOUNT
          	  FROM COMPANY C
          	  JOIN MEMBER M ON(C.M_ID=M.M_ID)
-         	  JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+         	  JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') R_EDATE
                 	 FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
                        	    FROM PAY_DETAIL PD
                        		JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
@@ -76,15 +76,15 @@
                        		AND PA_ID NOT IN ( SELECT PA_ID
                                           	   FROM PAY_DETAIL
                                           	   WHERE PD_TYPE = 'R'))                    
-              GROUP BY C_ID, R_EDATE) USING(C_ID))
+              GROUP BY C_ID, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM')) USING(C_ID))
 	</select>
 	
 	<!-- 수익 기간 검색 조회 리스트 -->
 	<select id="selectSearchDateRevenueList" resultMap="revenueResultSet" parameterType="arraylist">
-		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, R_EDATE || '-05' AS D_DATE, RCOUNT
         FROM COMPANY C
         JOIN MEMBER M ON(C.M_ID=M.M_ID)
-        JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+        JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') R_EDATE
            	   FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
                	      FROM PAY_DETAIL PD
                       JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
@@ -97,17 +97,17 @@
                       AND PA_ID NOT IN ( SELECT PA_ID
                                          FROM PAY_DETAIL
                                          WHERE PD_TYPE = 'R'))                    
-			   GROUP BY C_ID, R_EDATE) USING(C_ID)
+			   GROUP BY C_ID, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM')) USING(C_ID)
 		ORDER BY C_ID
 	</select>
 	
 	<!-- 수익 검색 조회 리스트 카운트 -->
 	<select id="getSearchWordRevenueListCount" resultType="_int" parameterType="arraylist">
 		SELECT COUNT(*)
-		FROM( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		FROM( SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, R_EDATE || '-05' AS D_DATE, RCOUNT
          	  FROM COMPANY C
          	  JOIN MEMBER M ON(C.M_ID=M.M_ID)
-         	  JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+         	  JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') R_EDATE
                 	 FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
                        	    FROM PAY_DETAIL PD
                        		JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
@@ -131,15 +131,15 @@
                        		AND PA_ID NOT IN ( SELECT PA_ID
                                           	   FROM PAY_DETAIL
                                           	   WHERE PD_TYPE = 'R'))                    
-              GROUP BY C_ID, R_EDATE) USING(C_ID))
+              GROUP BY C_ID, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM')) USING(C_ID))
 	</select>
 	
 	<!-- 수익 검색 조회 리스트 -->
 	<select id="selectSearchWordRevenueList" resultMap="revenueResultSet" parameterType="arraylist">
-		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') || '-05' AS D_DATE, RCOUNT
+		SELECT C_ID, C_NAME, ROUND(PRICE*0.85) AS PRICE, R_EDATE || '-05' AS D_DATE, RCOUNT
 		FROM COMPANY C
 		JOIN MEMBER M ON(C.M_ID=M.M_ID)
-		JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, R_EDATE
+		JOIN ( SELECT C_ID, SUM(PRICE) AS PRICE, COUNT(O_ID) RCOUNT, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM') R_EDATE
 			   FROM ( SELECT PD.PD_ID, PD.PRICE, P.PA_ID, RE.R_SDATE, RE.R_EDATE, RO.R_ID, C.C_ID, C.C_NAME, RE.O_ID
 					  FROM PAY_DETAIL PD
 					  JOIN PAYMENT P ON(PD.PA_ID=P.PA_ID)
@@ -163,7 +163,7 @@
 					  AND PA_ID NOT IN ( SELECT PA_ID
 										 FROM PAY_DETAIL
 										 WHERE PD_TYPE = 'R'))                    
-			  GROUP BY C_ID, R_EDATE) USING(C_ID)
+			  GROUP BY C_ID, TO_CHAR(ADD_MONTHS(R_EDATE, 1),'YYYY-MM')) USING(C_ID)
 		ORDER BY C_ID
 	</select>
 	
