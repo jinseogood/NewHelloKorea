@@ -881,7 +881,6 @@ public class CompanyController {
 //	oid시퀀스, startdate, enddate, 인원, 객실수, rid(객실명) 업체주소
 	@RequestMapping(value="reservationRooms.com")
 	public String reservationRooms(HttpServletRequest request, HttpServletResponse response, String myJson, Model model) throws IOException{
-		System.out.println(myJson);
 		Gson gson = new Gson();
 		Reservations[] array = gson.fromJson(myJson, Reservations[].class);
 		List<Reservations> list = Arrays.asList(array);
@@ -891,8 +890,6 @@ public class CompanyController {
 		}
 		
 		list = cs.insertReservations(list);
-		System.out.println("다녀온 후 list");
-		System.out.println(list.toString());
 		
 		model.addAttribute("list", list);
 		
