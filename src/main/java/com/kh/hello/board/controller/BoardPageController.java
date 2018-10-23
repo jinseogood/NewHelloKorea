@@ -801,7 +801,6 @@ public class BoardPageController {
 		bb.setOrigin_id(contentid);
 		
 		bb = bs.selectGradeCheck(bb);
-		System.out.println(bb);
 //		response.getWriter().println(bb);
 		mv.addObject("bb", bb);
 		
@@ -816,7 +815,6 @@ public class BoardPageController {
 		ObjectMapper mapper = new ObjectMapper();
 		Board bb = new Board();
 		ArrayList<Board> list = bs.selectFoodStoreTop3(bb);
-		System.out.println(list);
 		response.getWriter().print(mapper.writeValueAsString(list));
 	}
 	

@@ -101,7 +101,7 @@
 							sigunguCode = sessionStorage.getItem("sigunguCode");
 						}
 						if(sessionStorage.getItem("contenttypeid") == 0){
-							contenttypeid = 28;
+							contenttypeid = 12;
 						}else{
 							contenttypeid = sessionStorage.getItem("contenttypeid");
 						}
@@ -1539,173 +1539,207 @@
 						});
 						
 						if(sessionStorage.getItem("areaCode") == 1){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("서울 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("서울 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("서울 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("서울 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("서울 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 2){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("인천 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("인천 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("인천 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("인천 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("인천 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 3){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("대전 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("대전 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("대전 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("대전 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("대전 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 4){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("대구 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("대구 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("대구 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("대구 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("대구 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 5){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("광주 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("광주 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("광주 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("광주 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("광주 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 6){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("부산 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("부산 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("부산 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("부산 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("부산 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 7){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("울산 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("울산 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("울산 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("울산 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("울산 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 8){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("세종시 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("세종시 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("세종시 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("세종시 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("세종시 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 31){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("경기도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("경기도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("경기도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("경기도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("경기도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 32){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("강원도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("강원도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("강원도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("강원도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("강원도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 33){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("충청북도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("충청북도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("충청북도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("충청북도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("충청북도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 34){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("충청남도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("충청남도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("충청남도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("충청남도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("충청남도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 35){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("경상북도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("경상북도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("경상북도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("경상북도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("경상북도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 36){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("경상남도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("경상남도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("경상남도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("경상남도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("경상남도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 37){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("전라북도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("전라북도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("전라북도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("전라북도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("전라북도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 38){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("전라남도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("전라남도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("전라남도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("전라남도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("전라남도 레포츠");
 							}
 						}else if(sessionStorage.getItem("areaCode") == 39){
-							if(sessionStorage.getItem("contenttypeid") == 12){
+							if(sessionStorage.getItem("contenttypeid") == 0){
+								$(".tm-section-title1").text("제주도 오락거리")
+							}else if(sessionStorage.getItem("contenttypeid") == 12){
 								$(".tm-section-title1").text("제주도 관광지");
 							}else if(sessionStorage.getItem("contenttypeid") == 14){
 								$(".tm-section-title1").text("제주도 문화시설");
 							}else if(sessionStorage.getItem("contenttypeid") == 15){
 								$(".tm-section-title1").text("제주도 축제공연행사");
-							}else{
+							}else if(sessionStorage.getItem("contenttypeid") == 28){
 								$(".tm-section-title1").text("제주도 레포츠");
 							}
 						}

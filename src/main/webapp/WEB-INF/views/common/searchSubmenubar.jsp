@@ -90,6 +90,8 @@
 				}
 				if(sessionStorage.getItem("contenttypeid") == null){
 					contenttypeid = 0;
+				}else if(sessionStorage.getItem("contenttypeid") != null){
+					contenttypeid = 0;
 				}
 				pageNo = 1;
 				
