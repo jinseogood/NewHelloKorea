@@ -71,7 +71,7 @@
                                  FROM ATTACHMENT
                                  WHERE A_LEVEL = 2
                                  GROUP BY REF_ID)) AT ON (B.M_ID=AT.REF_ID)
-		WHERE BOARD_TYPE = 1 AND ORIGIN_ID = #{origin_id}
+		WHERE BOARD_TYPE = 1 AND ORIGIN_ID = #{origin_id} AND B.STATUS = 'Y'
 		ORDER BY BID DESC
      </select>
      
@@ -129,7 +129,7 @@
                                  FROM ATTACHMENT
                                  WHERE A_LEVEL = 2
                                  GROUP BY REF_ID)) AT ON (B.M_ID=AT.REF_ID)
-		WHERE BOARD_TYPE = 2 AND ORIGIN_ID = #{origin_id}
+		WHERE BOARD_TYPE = 2 AND ORIGIN_ID = #{origin_id} AND B.STATUS = 'Y'
 		ORDER BY BID DESC
      </select>
      

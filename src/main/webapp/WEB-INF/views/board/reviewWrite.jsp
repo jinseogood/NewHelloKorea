@@ -160,10 +160,7 @@ body{ margin:50px 0px; }
             
            					$(".rate2").rate(options);
             				$(".rate2").on("change", function(ev, data){
-                				/* console.log(data.from, data.to); */
-                				a = data.to;
-                				//console.log(a);
-                				
+                				a = data.to;              				
             				});
             				
         				});

@@ -19,7 +19,7 @@
      <!-- A인서트 -->
      <insert id="insertA" parameterType="Reply">
           INSERT INTO REPLY VALUES(SEQ_REPLY_ID.NEXTVAL, #{content},
-                                       SYSDATE, SYSDATE, 1, 0, #{m_id}, #{bid})
+                                       SYSDATE, SYSDATE, 'Y', 0, #{m_id}, #{bid})
      </insert>
      
      <select id="selectQAnswer" resultMap = "ReplyResultSet">
@@ -27,6 +27,7 @@
      	  (SELECT NICKNAME FROM MEMBER WHERE M_ID = R.M_ID) AS NICKNAME
      	  FROM REPLY R
      	  JOIN MEMBER M ON(M.M_ID = R.M_ID)
+     	  WHERE R.REGIST_STATUS = 'Y'
      </select>
      
      <select id="selectRAnswer" resultMap = "ReplyResultSet" parameterType="_int">
@@ -34,7 +35,7 @@
      	  (SELECT NICKNAME FROM MEMBER WHERE M_ID = R.M_ID) AS NICKNAME
      	  FROM REPLY R
      	  JOIN MEMBER M ON(M.M_ID = R.M_ID)
-     	  WHERE BID = #{bid}	
+     	  WHERE BID = #{bid} AND R.REGIST_STATUS = 'Y'	
      </select>
      
      <!-- 도움이 되었어요 카운트 -->

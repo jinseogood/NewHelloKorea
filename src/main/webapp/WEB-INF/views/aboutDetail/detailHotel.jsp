@@ -867,7 +867,6 @@
 				data:{page:page,contentid:contentid},
 				dataType:"json",
 				success:function(data){
-					console.log("오나");
 					console.log(data);
 					
 					$divBody = $(".new_line2");
