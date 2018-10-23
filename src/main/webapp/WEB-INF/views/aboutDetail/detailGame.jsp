@@ -766,7 +766,7 @@
 							output += "<div class='row line_b'>";
 							output += "<div class='col-lg-3 col-md-3 col-sm-6 col-xs-12' style = 'height:auto'>";
 							output += "<div class='tm-about-box-1' style = 'height:220px; padding:10px 10px;'>";
-							if(Q[i].attach != null){
+							if(Q[i].attach != ""){
 								output += "<a onclick = member_info(this);><img src='${ contextPath }/resources/uploadFiles/member/"+Q[i].attach+"' alt='img' class='tm-about-box-1-img' style = 'margin:0 auto 10px; width:140px; height:140px;'></a>";
 							}else{
 								output += "<a onclick = member_info(this);><img src='${ contextPath }/resources/img/about-4.jpg' alt='img' class='tm-about-box-1-img' style = 'margin:0 auto 10px;'></a>";
@@ -935,7 +935,7 @@
 							output += "<div class='row line_b'>";
 							output += "<div class='col-lg-3 col-md-3 col-sm-6 col-xs-12' style = 'height:220px'>";
 							output += "<div class='tm-about-box-1' style = 'height:220px; padding:10px 10px;'>";
-							if(review[i].attach != null){
+							if(review[i].attach != ""){
 								output += "<a onclick = member_info(this);><img src='${ contextPath }/resources/uploadFiles/member/"+review[i].attach+"' alt='img' class='tm-about-box-1-img' style = 'margin:0 auto 10px; width:140px; height:140px;'></a>";
 							}else{
 								output += "<a onclick = member_info(this);><img src='${ contextPath }/resources/img/about-4.jpg' alt='img' class='tm-about-box-1-img' style = 'margin:0 auto 10px;'></a>";

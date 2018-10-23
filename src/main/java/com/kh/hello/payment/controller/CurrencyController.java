@@ -26,8 +26,6 @@ public class CurrencyController {
 	public void currencyCheck(String cur, HttpServletResponse response){
 		response.setContentType("text/html; charset=utf-8");
 		
-		System.out.println("check cur : " + cur);
-		
 		String addr = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=";
         String serviceKey = "forZLoVVwIvqXCL19weyohSBqll9az59";
         String parameter = "";
@@ -62,13 +60,9 @@ public class CurrencyController {
 	public void currencySetting(String cur, String sCur, Model model, HttpServletRequest request, HttpServletResponse response){
 		int result=0;
 		
-		System.out.println("setting cur : " + cur);
-		System.out.println("setting sCur : " + sCur);
-		
 		ArrayList<Object> currencyInfo=new ArrayList<Object>();
 		
 		if(sCur != null){
-			
 			if(cur.equals("AED")){
 				cur="د.ا";
 			}

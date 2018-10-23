@@ -22,11 +22,11 @@
 		<div class="submenuTitle">
 			<nav class="tm-nav">
 				<ul>
-					<li><a href="userMypage.um">프로필수정</a></li>
-					<li><a href="reservationHistory.um">예약내역</a></li>
-					<li><a href="pointHistory.um">포인트내역</a></li>
-					<li><a href="watchList.um">찜목록</a></li>
-					<li><a href="activities.um">활동내역</a></li>
+					<li><a href="userMypage.um" style="padding: 10px 34px 10px 34px;">프로필수정</a></li>
+					<li><a href="reservationHistory.um" style="padding: 10px 34px 10px 34px;">예약내역</a></li>
+					<li><a href="pointHistory.um" style="padding: 10px 34px 10px 34px;">포인트내역</a></li>
+					<li><a href="watchList.um" style="padding: 10px 34px 10px 34px;">찜목록</a></li>
+					<li><a href="activities.um" style="padding: 10px 34px 10px 34px;">활동내역</a></li>
 				</ul>
 			</nav>	
 		</div>
