@@ -364,7 +364,6 @@
 				type:"post",
 				data:{},
 				success:function(data){
-					console.log(data);
 					$("#btnJoinFacebook").attr("onclick", "location.href =" + data);
 					
 					
@@ -386,7 +385,6 @@
 				type:"post",
 				data:{mId:mId},
 				success:function(data){
-					console.log(data);
 					if(data.newMessage == 'Y'){
 						$("#newMsg").show();
 						$("#noMsg").hide();
@@ -409,8 +407,6 @@
 				data:{email:email},
 				success:function(data){
 					if(data==0){
-						console.log(data);
-						alert("추가정보창으로 이동");
 						$("#userForm").submit();
 					}else{
 						alert("중복된 이메일");
@@ -430,7 +426,6 @@
 				type:"post",
 				data:{},
 				success:function(data){
-				console.log(data);
 					$("#btnJoinGoogle").attr("onclick", "location.href =" + data);
 					
 				},
