@@ -134,7 +134,7 @@
 						<c:if test="${ sessionScope.cur.get(0) == '$' }">
 							<td style="text-align:center; border-right:1px solid lightgray;">${ sessionScope.cur.get(0) } <fmt:formatNumber value="${ pdList.get(0).price / (parseCur * 1000) }" pattern="#,###.##"/></td>
 						</c:if>
-						<c:if test="${ sessionScope.cur.get(0) != '¥' && sessionScope.cur.get(0) != 'Rp' && sessioScope.cur.get(0) != '$' }">
+						<c:if test="${ sessionScope.cur.get(0) != '¥' && sessionScope.cur.get(0) != 'Rp' && sessionScope.cur.get(0) != '$' }">
 							<td style="text-align:center; border-right:1px solid lightgray;">${ sessionScope.cur.get(0) } <fmt:formatNumber value="${ pdList.get(0).price / parseCur }" pattern="#,###.##"/></td>
 						</c:if>
 					</c:if>

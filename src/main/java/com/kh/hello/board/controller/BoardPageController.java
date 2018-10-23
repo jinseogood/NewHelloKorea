@@ -714,6 +714,15 @@ public class BoardPageController {
 			int result2 = bs.updateReply(reply_id);
 			count = bs.selectThumbsCount(thumb);
 			if(result1 > 0 && result2 >0){
+				if(count == 5){
+					int resultA = 0 ;
+					resultA = bs.selectPointA(thumb);
+						
+					if(resultA == 0){
+						int resultAA = 0;
+						resultAA = bs.insertPointA(thumb);
+					}
+				}					
 				mv.addObject("msg", "도움이 되었어요 되었습니다.");
 				mv.addObject("thumbsCount", count);
 			}else{
