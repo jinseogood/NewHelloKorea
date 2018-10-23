@@ -943,7 +943,7 @@
 							output += "<h3 class='tm-about-box-1-title' style = 'margin-bottom:5px;'>"+review[i].nickname+"<span>( "+review[i].national+" )</span></h3>";
 							output += "<div class = 'member_info' style = 'border-radius: 10px; visibility:hidden; position:absolute; background-color:lightgray; left:-133px; top:-10px; width:200px; height:200px; z-index:999;'>";
 							output += "<div><h3>"+review[i].nickname+"</h3><input type='hidden' id='receiveIdForMsg"+i+"' value="+review[i].m_id+"><input type='hidden' id='nicknameForMsg"+i+"' value="+review[i].nickname+"><input type='hidden' id='mIdForMsg' value="+${sessionScope.loginUser.mId}+"></div>";
-							output += "<div style = 'text-align:right;'><button class='btn btn-light' style='width:65px; height:30px;' type = 'button' onclick='openMsg("+i+")'>메세지</button></div>";
+							output += "<div style = 'text-align:right;'><button class='btn btn-light' style='width:65px; height:30px;' type = 'button' onclick='openMsg3("+i+")'>메세지</button></div>";
 							output += "<div class='info' style = 'text-align:left;'>회원가입시기 : "+review[i].create_date+"<br>";
 							output += "흥미 : "+review[i].interesting+", 국적 : "+review[i].national+"<br>";
 							output += "E-MAIL : "+review[i].email+"<br>";
@@ -1416,7 +1416,7 @@
 		  	});
 		});
 		
-		function openMsg(i){
+		function openMsg3(i){
 			var mId = $("#mIdForMsg").val();
 			var receiveId = $("#receiveIdForMsg"+i).val();
 			var nickname = $("#nicknameForMsg"+i).val();
