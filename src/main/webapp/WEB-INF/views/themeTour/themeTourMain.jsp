@@ -9,7 +9,7 @@
 <title>Hello Korea</title>
 <style>
 	#more{margin-top:5%;}
-	#detailClick:hover{cursor:pointer}
+	/* #detailClick:hover{cursor:pointer} */
 	.themeText{font-size:20px;}
 	#detailHover{max-width:750px;}
 	#detailInfo-1{max-width:500px;}
@@ -18,6 +18,7 @@
 	#dibsBtn{padding:15px; width:50px; height:50px;}
 	#infoTextArea{height:175px; padding:10px 20px 44px; text-align:left; }
 	.img-responsive1{width:250px; height:225px;}
+	.detailViewContent{cursor:pointer;}
 </style>
 </head>
 <body>

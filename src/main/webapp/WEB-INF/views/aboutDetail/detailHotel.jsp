@@ -192,7 +192,6 @@
 						output += "<h3>숙박정보</h3><br>";
 						output += "ㆍ <b>문의 및 안내</b> : "+myData.infocenterlodging+"<br>";
 						output += "ㆍ <b>규 모</b> : "+myData.scalelodging+"<br>";
-						//output += "ㆍ <b>객실 수</b> : "+myData.roomcount+"<br>";
 						output += "ㆍ <b>객실 유형</b> : "+myData.roomtype+"<br>";
 						output += "ㆍ <b>주차 가능</b> : "+myData.parkinglodging+"<br>";
 						output += "ㆍ <b>조리 가능</b> : "+myData.chkcooking+"<br>";
@@ -270,13 +269,10 @@
 									}else{ 
 										output += "<td class='detailContent detailContent1'><img src="+myData[i].roomimg1+" class='roomImgTd' />";
 									}
-									//output += "<td> 호텔이미지 주석중입니다.";
 									output += "</td>";
 									output += "<td>";
 									output += "<h4><b>객실명 : "+result[i].rType+"</b></h4>";
 									output += "ㆍ 객실크기 : "+myData[i].roomsize1+" 평<br>";
-									//output += "ㆍ 객실수 : "+myData[i].roomcount+"<br>";
-									//output += "ㆍ 기준인원 : "+myData[i].roombasecount+" (최대인원 : "+myData[i].roommaxcount+")<br>";
 									output += "ㆍ 목욕시설 : "+myData[i].roombathfacility+"<br>";
 									output += "ㆍ 욕조 : "+myData[i].roombath+"<br>";
 									output += "ㆍ 에어컨 : "+myData[i].roomaircondition+"<br>";
@@ -287,13 +283,10 @@
 									output += "ㆍ 세면도구 : "+myData[i].roomtoiletries+"<br>";
 									output += "ㆍ 드라이기 : "+myData[i].roomhairdryer+"<br>";
 									output += "</td>"
-									output += "<td style='font-size:30px;'>";
+									output += "<td style='font-size:23px;'>";
 									output += "ㆍ 정원 : "+myData[i].roombasecount+"명<br>";
 									output += "ㆍ 최대인원 : "+result[i].rLimit+"명<br>";
-									//output += "ㆍ 가격 : "+result[i].rPrice+"원<br>";
 									output += "ㆍ 가격 : " + curIcon + " " + numberWithCommas((result[i].rPrice/currency)) + "<br>";
-									//output += "ㆍ 비수기 주중최소 : "+myData[i].roomoffseasonminfee1+" (성수기 : "+myData[i].roompeakseasonminfee1+")<br>";
-									//output += "ㆍ 비수기 주말최소 : "+myData[i].roomoffseasonminfee2+" (성수기 : "+myData[i].roompeakseasonminfee2+")<br>";
 									output += "</td>";
 									output += "<td class='detailContent detailCount'>";
 									output += "인　원 &nbsp;&nbsp;<select class='selectPeople' id='selectPeople"+rid+"' name='selectPeople'>";
@@ -336,17 +329,10 @@
 			<c:if test="${!empty sessionScope.loginUser}">
 			<script>
 			function payment(rid, price, rType){
-				console.log("paymentrid : " + rid);
-				console.log("paymentprice : " + price);
-				console.log("paymentrType : " + rType);
 				var count = $("#selectRoom"+rid).val();
 				var limit = $("#selectPeople"+rid).val();
 				var startDate = $("#fromDate").val();
 				var endDate = $("#toDate").val();
-				//alert("startDate : " + startDate);
-				//alert("endDate : " + endDate);
-				console.log(count);
-				console.log(limit);
 				
 				location.href="${contextPath}/reservationRoom.com?rid="+rid+"&price="+price+"&rType="+rType+"&count="+count+"&limit="+limit+"&startDate="+startDate+"&endDate="+endDate;
 			}
@@ -359,6 +345,8 @@
 			}
 			</script>
 			</c:if>
+			
+			
 			<script>
 			function paymentTest(){
 				var startDate = $("#fromDate").val();
@@ -427,36 +415,27 @@
 		/* Google map
       	------------------------------------------------*/
       	var map;
-     	 
         function initialize(mapy, mapx, title) {
-   
         	var mapLocation = {lat:mapy, lng:mapx};
-          var mapOptions = { //구글 맵 옵션 설정
-              zoom : 16, //기본 확대율
-              center : mapLocation, //new google.maps.LatLng(mapy, mapx), // 지도 중앙 위치
-              scrollwheel : false, //마우스 휠로 확대 축소 사용 여부
-              mapTypeControl : false //맵 타입 컨트롤 사용 여부
+        	var mapOptions = { //구글 맵 옵션 설정
+            	zoom : 16, //기본 확대율
+            	center : mapLocation, //new google.maps.LatLng(mapy, mapx), // 지도 중앙 위치
+            	scrollwheel : false, //마우스 휠로 확대 축소 사용 여부
+            	mapTypeControl : false //맵 타입 컨트롤 사용 여부
           };
    
           map = new google.maps.Map(document.getElementById('google-map'), mapOptions); //구글 맵을 사용할 타겟
           var size_x = 60;
           var size_y = 60;
           var image = new google.maps.MarkerImage('https://www.weicherthallmark.com/wp-content/themes/realty/lib/images/map-marker/map-marker-gold-fat.png', //마커 이미지 설정
-        		  		new google.maps.Size(size_x, size_y),
-        		  		'',
-        		  		'',
+        		  		new google.maps.Size(size_x, size_y),'','',
         		  		new google.maps.Size(size_x, size_y));
-          				
           var marker = new google.maps.Marker({ //마커 설정
               map : map,
               position : mapLocation, //마커 위치
               //icon : image,//마커 이미지
               title : title//가게이름..
           });
-          /* var marker = new google.maps.Marker({
-        	  position:uluru,
-        	  map:map
-          }); */
    
           google.maps.event.addDomListener(window, "resize", function() { //리사이즈에 따른 마커 위치
               var center = map.getCenter();

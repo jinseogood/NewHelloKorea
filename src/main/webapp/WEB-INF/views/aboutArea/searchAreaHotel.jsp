@@ -63,8 +63,8 @@
 						<label for="price1" class="hotelSearchText">&nbsp;&nbsp;가격 낮은 순</label><br><br>
 						<input type="radio" class="hotelSearchMoney" value="2" id="price2" name="hotelSearchConditionMoney" style="width:17px; height:17px;"/>
 						<label for="price2" class="hotelSearchText">&nbsp;&nbsp;평점 높은 순</label><br><br>
-						<input type="radio" class="hotelSearchMoney" value="3" id="price3" name="hotelSearchConditionMoney" style="width:17px; height:17px;"/>
-						<label for="price3" class="hotelSearchText">&nbsp;&nbsp;....인기순?</label><br><br>
+						<!-- <input type="radio" class="hotelSearchMoney" value="3" id="price3" name="hotelSearchConditionMoney" style="width:17px; height:17px;"/>
+						<label for="price3" class="hotelSearchText">&nbsp;&nbsp;....인기순?</label><br><br> -->
 					</div>
 					
 					<br><br>
@@ -574,8 +574,10 @@
 						$(this).children("i").removeClass("fa fa-heart-o tm-home-box-2-icon border-right");
 						$(this).children("i").addClass("fa fa-heart tm-home-box-2-icon border-right");
 					}
+					
 				});
 			});
+			
 			
 			function btnGood(contenttypeid, contentid, cid){
 				console.log(contenttypeid);
@@ -600,6 +602,7 @@
 					});
 			}
 			</script>
+			
 			</c:if>
 			<c:if test="${empty sessionScope.loginUser}">
 			<script>
@@ -608,6 +611,7 @@
 				}
 			</script>
 			</c:if>
+			<c:if test="${!empty sessionScope.loginUser }">
 			<script>
 			function insertDibsHotel(contentid, cid){
 				$.ajax({
@@ -639,7 +643,9 @@
 					}
 				});
 			}
-			
+			</script>
+			</c:if>
+			<script>
 			function detailView(contentid,contenttypeid,cid){
 				location.href="${contextPath}/detailHotel?contentid="+contentid+"&contenttypeid="+contenttypeid+"&cid="+cid;
 			}

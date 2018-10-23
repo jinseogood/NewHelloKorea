@@ -950,9 +950,73 @@
 				
 			});
 				shoppingTheme();
-			
+				mainGameData();
 			
 		});
+		
+		function mainGameData(){
+			//var scontenttypeid = 38;
+			var contenttypeid = 12;
+			var contenttypeidd = 38;
+			var contentid;
+			var rowArea = $("#rowArea");
+			rowArea.html("");
+			var num = [4,3,4];
+			var contenttypeidvalue = [126508, 126498];
+			var contenttypeidvaluee = 984596;
+			var mapy;
+			var mapx;
+			for(var i = 0; i < contenttypeidvalue.length; i++){
+				contentid = contenttypeidvalue[i];
+				$.ajax({
+					url:"mainGameData.sub",
+					type:"GET",
+					data:{contenttypeid:contenttypeid, contentid:contentid},
+					dataType:"json",
+					async:false,
+					success:function(data){console.log(data);
+					mapy = data.response.body.items.item.mapy;
+					mapx = data.response.body.items.item.mapx;
+						output = "";
+						output += "<div class='col-lg-4 col-md-4 col-sm-6'>";
+						output += "<div class='tm-home-box-1 tm-home-box-1-2 tm-home-box-1-center'>";
+						output += "<img src="+data.response.body.items.item.firstimage+" alt='image' class='img-responsive0' />";
+						output += "<a onclick='detailGameView("+contentid+","+contenttypeid+","+mapy+","+mapx+")'>";
+						output += "<div class='tm-green-gradient-bg tm-city-price-container'>";
+						output += "<span>"+data.response.body.items.item.title+"</span>";
+						output += "<span>"+num[i]+"건의 리뷰</span>";
+						output += "</div></a></div></div>";
+						document.getElementById("rowArea").innerHTML += output;
+					},error:function(data){console.log(data);}
+				});
+			}
+				$.ajax({
+					url:"mainGameData.sub",
+					type:"GET",
+					data:{contenttypeid:contenttypeidd, contentid:contenttypeidvaluee},
+					dataType:"json",
+					async:false,
+					success:function(data){console.log(data);
+					contenttypeid = data.response.body.items.item.contenttypeid;
+					contentid = data.response.body.items.item.contentid;
+					mapy = data.response.body.items.item.mapy;
+					mapx = data.response.body.items.item.mapx;
+						output = "";
+						output += "<div class='col-lg-4 col-md-4 col-sm-6'>";
+						output += "<div class='tm-home-box-1 tm-home-box-1-2 tm-home-box-1-center'>";
+						output += "<img src="+data.response.body.items.item.firstimage+" alt='image' class='img-responsive0' />";
+						output += "<a onclick='detailGameView("+contentid+","+contenttypeid+","+mapy+","+mapx+")'>";
+						output += "<div class='tm-green-gradient-bg tm-city-price-container'>";
+						output += "<span>"+data.response.body.items.item.title+"</span>";
+						output += "<span>"+num[2]+"건의 리뷰</span>";
+						output += "</div></a></div></div>";
+						document.getElementById("rowArea").innerHTML += output;
+					},error:function(data){console.log(data);}
+				});
+		}
+		function detailGameView(contentid, contenttypeid, mapy, mapx){
+			location.href="${contextPath}/detailGame?contentid="+contentid+"&contenttypeid="+contenttypeid+"&mapy="+mapy+"&mapx="+mapx;
+		}
 		
 		function shoppingTheme(){
 		$.ajax({
