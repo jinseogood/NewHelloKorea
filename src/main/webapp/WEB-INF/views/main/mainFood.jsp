@@ -993,7 +993,7 @@
 		});
 		function mainFoodData(){
 			var rowArea = $("#rowArea");
-			rowArea.html("");
+			//rowArea.html("");
 			var contenttypeid = 39;
 			var output = "";
 			$.ajax({

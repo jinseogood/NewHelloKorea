@@ -324,6 +324,12 @@
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+							}else if(data[i].grade == 0){
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 							}else if(data[i].grade > 0 && data[i].grade <= 0.5){
 								output += "<i class='fas fa-star-half-alt' style = 'font-size:20px'></i>";//별반
 								output += "<i class='far fa-star' style = 'font-size:20px'></i>";
@@ -469,6 +475,12 @@
 							output += "<a onclick='' class='tm-home-box-2-link titleZone' id='tm-home-box-2-link-2'>";
 							output += "<span class='tm-home-box-2-description box-3'>";
 							if(data[i].grade == null){
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+							}else if(data[i].grade == 0){
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
@@ -722,6 +734,12 @@
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+							}else if(data[i].grade == 0){
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 							}else if(data[i].grade > 0 && data[i].grade <= 0.5){
 								output += "<i class='fas fa-star-half-alt' style = 'font-size:20px'></i>";//별반
 								output += "<i class='far fa-star' style = 'font-size:20px'></i>";
@@ -867,6 +885,12 @@
 							output += "<a onclick='' class='tm-home-box-2-link titleZone' id='tm-home-box-2-link-2'>";
 							output += "<span class='tm-home-box-2-description box-3'>";
 							if(data[i].grade == null){
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+								output += "<i class='far fa-star' style='font-size:20px;'></i>";
+							}else if(data[i].grade == 0){
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
 								output += "<i class='far fa-star' style='font-size:20px;'></i>";
