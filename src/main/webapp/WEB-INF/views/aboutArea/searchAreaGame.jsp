@@ -89,19 +89,24 @@
 					var mapx;
 					
 					
-					
+					var sigungCodee = sessionStorage.getItem("sigunguCode");
+					var contenttypeidd = sessionStorage.getItem("contenttypeid");
+					console.log(contenttypeidd);
 					</script>
 					<c:if test="${!empty sessionScope.loginUser}">
 					<script>
 					function searchGamePage(pageNo){
 						console.log("오세여?");
+						
 						if(sessionStorage.getItem("sigunguCode") == 0){
 							sigunguCode = "";
 						}else{
 							sigunguCode = sessionStorage.getItem("sigunguCode");
 						}
 						if(sessionStorage.getItem("contenttypeid") == 0){
-							contenttypeid = 12;
+							contenttypeid = 15;
+						}else if(sessionStorage.getItem("contenttypeid") == null){
+							contenttypeid = 15;
 						}else{
 							contenttypeid = sessionStorage.getItem("contenttypeid");
 						}
