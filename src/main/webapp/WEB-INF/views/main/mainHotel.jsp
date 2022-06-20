@@ -388,7 +388,7 @@
 		var sigunguCode2;
 		var pageNo1 = sessionStorage.setItem("pageNo", 1);
 		var pageNo = sessionStorage.getItem("pageNo");
-		
+
 	
 		$(function(){
 			
@@ -398,8 +398,7 @@
 				areaCode2 = sessionStorage.setItem("areaCode", areaCode1);
 				areaCode = sessionStorage.getItem("areaCode");
 				areaCode = $(".mainSearchArea").val();
-				console.log("mainSearchAreaValue : " + areaCode);
-				
+
 				if(areaCode == 0){
 					alert("지역을 선택해 주세요.");
 				}else if(areaCode == 1){
@@ -595,8 +594,7 @@
 			
 			$(".mainSearchArea").on("click", function(){
 				areaCode = $(".mainSearchArea").val();
-				console.log("mainSearchAreaCode : " + areaCode);
-				
+
 				if(areaCode == 1){
 					$("#sigungu1").show();
 					$("#sigungu2").hide();
@@ -990,8 +988,6 @@
 					async:false,
 					dataType:"json",
 					success:function(data){
-						console.log("성공?");
-						console.log(data);
 						for(var i in data){
 							contentid = data[i].contentid;
 							cid = data[i].cid;
@@ -1165,9 +1161,7 @@
 		});
 		
 		function btnGood(contenttypeid, contentid){
-			console.log(contenttypeid);
-			console.log(contentid);
-			
+
 				$.ajax({
 					url:"dibsCheckStatus.good",
 					type:"GET",
@@ -1175,8 +1169,6 @@
 					success:function(data){
 						// 1일시, 이미 찜한 목록 => delete요청.
 						// 0일시, 새로 찜에 추가 => insert요청.
-						console.log("오긴와?");
-						console.log(data);
 						if(data > 0){
 							deleteDibsInfo(contentid, contenttypeid);
 						}else{
@@ -1236,7 +1228,6 @@
 		}
 		
 		function detailView(contentid, contenttypeid, mapy, mapx){
-			console.log("컨텐츠타입 : " + contenttypeid);
 				location.href="${contextPath}/detailGame?contentid="+contentid+"&contenttypeid="+contenttypeid+"&mapy="+mapy+"&mapx="+mapx;
 		}
 			
@@ -1252,7 +1243,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer1");
 						containerArea.html("");
@@ -1273,7 +1263,6 @@
 						containerArea.html(output);
 					},
 					error:function(data){
-						console.log("fail..");
 						console.log(data);
 					}
 				});
@@ -1282,7 +1271,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer2");
 						containerArea.html("");
@@ -1311,7 +1299,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer3");
 						containerArea.html("");
@@ -1340,7 +1327,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer4");
 						containerArea.html("");
@@ -1372,7 +1358,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer1");
 						containerArea.html("");
@@ -1393,7 +1378,6 @@
 						containerArea.html(output);
 					},
 					error:function(data){
-						console.log("fail..");
 						console.log(data);
 					}
 				});
@@ -1402,7 +1386,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer2");
 						containerArea.html("");
@@ -1460,7 +1443,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer4");
 						containerArea.html("");
@@ -1492,7 +1474,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer1");
 						containerArea.html("");
@@ -1513,7 +1494,6 @@
 						containerArea.html(output);
 					},
 					error:function(data){
-						console.log("fail..");
 						console.log(data);
 					}
 				});
@@ -1522,7 +1502,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer2");
 						containerArea.html("");
@@ -1551,7 +1530,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer3");
 						containerArea.html("");
@@ -1580,7 +1558,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer4");
 						containerArea.html("");
@@ -1612,7 +1589,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer1");
 						containerArea.html("");
@@ -1641,7 +1617,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer2");
 						containerArea.html("");
@@ -1670,7 +1645,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer3");
 						containerArea.html("");
@@ -1699,7 +1673,6 @@
 					type:"GET",
 					dataType:"json",
 					success:function(data){
-						console.log(data);
 						var themeData = data.response.body.items.item;
 						var containerArea = $("#subContainer4");
 						containerArea.html("");
